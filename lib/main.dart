@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'package:futurebuilder_example/page/devices_list.dart';
+
 import 'package:futurebuilder_example/page/user_local_page.dart';
 import 'package:futurebuilder_example/page/user_network_page.dart';
 
@@ -52,11 +55,11 @@ class _MainPageState extends State<MainPage> {
           items: [
             BottomNavigationBarItem(
               icon: Text('FutureBuilder'),
-              title: Text('Local'),
+              label: ('Network'),
             ),
             BottomNavigationBarItem(
               icon: Text('FutureBuilder'),
-              title: Text('Network'),
+              label: ('Local'),
             ),
           ],
           onTap: (int index) => setState(() => this.index = index),
@@ -65,11 +68,12 @@ class _MainPageState extends State<MainPage> {
       );
 
   Widget buildPages() {
+    // bottomNavBarPageBuilder
     switch (index) {
       case 0:
-        return UserLocalPage();
+        return DeviceListPage();
       case 1:
-        return UserNetworkPage();
+        return UserLocalPage();
       default:
         return Container();
     }
