@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:futurebuilder_example/page/devices_list.dart';
 
 import 'package:futurebuilder_example/page/user_local_page.dart';
+import 'package:futurebuilder_example/page/settings_page.dart';
 import 'package:futurebuilder_example/page/user_network_page.dart';
 
 Future main() async {
@@ -54,12 +55,16 @@ class _MainPageState extends State<MainPage> {
           selectedItemColor: Colors.teal,
           items: [
             BottomNavigationBarItem(
-              icon: Text('FutureBuilder'),
-              label: ('Network'),
+              icon: Icon(Icons.bolt),
+              label: ('Devices'),
             ),
             BottomNavigationBarItem(
-              icon: Text('FutureBuilder'),
+              icon: Icon(Icons.pie_chart),
               label: ('Local'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: ('Settings'),
             ),
           ],
           onTap: (int index) => setState(() => this.index = index),
@@ -74,6 +79,8 @@ class _MainPageState extends State<MainPage> {
         return DeviceListPage();
       case 1:
         return UserLocalPage();
+      case 2:
+        return SettingsPage();
       default:
         return Container();
     }
