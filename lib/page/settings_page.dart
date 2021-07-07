@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:futurebuilder_example/api/deviceAPI.dart';
 
 // Define a custom Form widget.
 class SettingsPage extends StatefulWidget {
@@ -8,33 +9,63 @@ class SettingsPage extends StatefulWidget {
   }
 }
 
-// Define a corresponding State class.
-// This class holds data related to the form.
 class SettingsPageState extends State<SettingsPage> {
-  // Create a global key that uniquely identifies the Form widget
-  // and allows validation of the form.
-  //
-  // Note: This is a `GlobalKey<FormState>`,
-  // not a GlobalKey<MyCustomFormState>.
-  final _formKey = GlobalKey<FormState>();
+  final myController = TextEditingController();
+  final GlobalKey<SettingsPageState> key = new GlobalKey();
+  String var1 = 'text1';
+  void dispose() {
+    myController.dispose();
+    super.dispose();
+  }
+
+  getText() {
+    return myController.text;
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Build a Form widget using the _formKey created above.
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: <Widget>[
-          TextFormField(
-            // The validator receives the text that the user has entered.
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
+    return Scaffold(
+      // appBar: AppBar(
+      //   title: Text('Retrieve Text Input'),
+      // ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              key: settingsKey,
+              controller: myController,
+              decoration: InputDecoration(
+                  hintText: 'Enter API Endpoint URL',
+                  border: OutlineInputBorder()),
+            ),
           ),
+          ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  var1 = myController.text;
+                });
+              },
+              child: Text('Apply URL'))
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        // When the user presses the button, show an alert dialog containing
+        // the text that the user has entered into the text field.
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                // Retrieve the text the that user has entered by using the
+                // TextEditingController.
+                content: Text(myController.text),
+              );
+            },
+          );
+        },
+        tooltip: 'Show me the value!',
+        child: Icon(Icons.text_fields),
       ),
     );
   }

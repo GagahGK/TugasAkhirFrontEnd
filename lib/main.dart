@@ -60,7 +60,7 @@ class _MainPageState extends State<MainPage> {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.pie_chart),
-              label: ('Local'),
+              label: ('Cluster'),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.settings),
