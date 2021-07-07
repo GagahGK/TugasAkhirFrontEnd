@@ -21,7 +21,7 @@ class DeviceApi {
         throw Exception('Failed to load devices');
       }
     } on ArgumentError catch (e) {
-      return Future.error("asdasd");
+      return Future.error("Please Provide");
     }
 
     //get from local

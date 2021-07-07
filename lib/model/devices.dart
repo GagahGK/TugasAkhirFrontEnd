@@ -13,56 +13,27 @@ String devicesToJson(List<Devices> data) =>
 class Devices {
   Devices({
     this.id,
-    this.macaddress,
+    this.macAddress,
     this.name,
-    this.records,
+    this.power,
   });
 
   int id;
-  String macaddress;
-  dynamic name;
-  List<Record> records;
+  String macAddress;
+  String name;
+  String power;
 
   factory Devices.fromJson(Map<String, dynamic> json) => Devices(
         id: json["id"],
-        macaddress: json["macaddress"],
+        macAddress: json["mac_address"],
         name: json["name"],
-        records:
-            List<Record>.from(json["records"].map((x) => Record.fromJson(x))),
+        power: json["power"],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "macaddress": macaddress,
+        "mac_address": macAddress,
         "name": name,
-        "records": List<dynamic>.from(records.map((x) => x.toJson())),
-      };
-}
-
-class Record {
-  Record({
-    this.id,
-    this.timestamp,
-    this.deviceId,
-    this.reading,
-  });
-
-  int id;
-  DateTime timestamp;
-  int deviceId;
-  int reading;
-
-  factory Record.fromJson(Map<String, dynamic> json) => Record(
-        id: json["id"],
-        timestamp: DateTime.parse(json["timestamp"]),
-        deviceId: json["device_id"],
-        reading: json["reading"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "timestamp": timestamp.toIso8601String(),
-        "device_id": deviceId,
-        "reading": reading,
+        "power": power,
       };
 }

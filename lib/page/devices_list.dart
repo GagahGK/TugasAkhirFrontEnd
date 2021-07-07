@@ -40,7 +40,7 @@ class DeviceListPage extends StatelessWidget {
               backgroundColor: Colors.purpleAccent.shade100,
               child: Text(device.name[0]),
             ),
-            subtitle: Text(device.macaddress),
+            subtitle: Text(device.macAddress),
           );
         },
       );
