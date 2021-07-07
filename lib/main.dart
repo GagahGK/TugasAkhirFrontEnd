@@ -43,7 +43,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int index = 0;
+  int index = 2;
 
   @override
   Widget build(BuildContext context) => Scaffold(
