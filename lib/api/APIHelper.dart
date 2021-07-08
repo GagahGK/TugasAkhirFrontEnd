@@ -56,20 +56,25 @@ class DeviceApi {
   }
 }
 
-class recordAPI {
-  static Future<Record> getRecord(
-      int deviceId, DateTime dateStart, DateTime dateEnd) async {
+class RecordAPI {
+  static Future<List<Record>> getRecord(
+      int deviceId, DateTime dateStart) async {
     SettingsPreferences sp = await SettingsPreferences.getSettings();
     String uri = sp.uri ?? 'localhost';
+    DateTime dateStart00 = returnDate(dateStart);
+    DateTime dateEnd00 = dateStart00.add(Duration(days: 1));
     try {
-      var response = await http
-          .get(uri + "$deviceId" + "/records" + "/$dateStart" + "$dateEnd");
+      var response = await http.get(uri +
+          "$deviceId" +
+          "/records" +
+          "/${dateStart00.toIso8601String()}" +
+          "/${dateEnd00.toIso8601String()}");
       print(uri);
       print(response.statusCode);
 
       if (response.statusCode == 200) {
         print(response.body);
-        // return deviceFromJson(response.body);
+        return recordsFromJson(response.body);
       } else {
         throw Exception('Failed to load devices');
       }
@@ -77,4 +82,14 @@ class recordAPI {
       return Future.error("Please Provide correct API URL");
     }
   }
+}
+
+DateTime returnDate(DateTime date) {
+  date = date.subtract(Duration(
+      hours: date.hour,
+      minutes: date.minute,
+      seconds: date.second,
+      milliseconds: date.millisecond,
+      microseconds: date.microsecond));
+  return date;
 }
