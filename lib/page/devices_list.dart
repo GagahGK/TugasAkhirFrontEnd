@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:futurebuilder_example/api/deviceAPI.dart';
+import 'package:futurebuilder_example/api/APIHelper.dart';
 import 'package:futurebuilder_example/model/devices.dart';
+import 'package:futurebuilder_example/page/device_page.dart';
 // import 'package:futurebuilder_example/page/deviceDetail.dart';
 
 class DeviceListPage extends StatelessWidget {
@@ -32,9 +33,9 @@ class DeviceListPage extends StatelessWidget {
           final device = devices[index];
           device.name ??= "NULL";
           return ListTile(
-            // onTap: () => Navigator.of(context).push(MaterialPageRoute(
-            //   builder: (BuildContext context) => UserPage(user: user),
-            // )),
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (BuildContext context) => DevicePage(device: device),
+            )),
             title: Text(device.name),
             leading: CircleAvatar(
               backgroundColor: Colors.purpleAccent.shade100,

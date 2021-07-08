@@ -5,7 +5,6 @@ import 'package:futurebuilder_example/page/devices_list.dart';
 
 import 'package:futurebuilder_example/page/user_local_page.dart';
 import 'package:futurebuilder_example/page/settings_page.dart';
-import 'package:futurebuilder_example/page/user_network_page.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();

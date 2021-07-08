@@ -1,19 +1,12 @@
 // To parse this JSON data, do
 //
-//     final devices = devicesFromJson(jsonString);
+//     final Devices = DevicesFromJson(jsonString);
 
 import 'dart:convert';
 
-Devices deviceFromJson(String str) => Devices.fromJson(json.decode(str));
+Devices DevicesFromJson(String str) => Devices.fromJson(json.decode(str));
 
-List<Record> recordsFromJson(String str) =>
-    List<Record>.from(json.decode(str).map((x) => Record.fromJson(x)));
-
-List<Devices> devicesFromJson(String str) =>
-    List<Devices>.from(json.decode(str).map((x) => Devices.fromJson(x)));
-
-String devicesToJson(List<Devices> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String DevicesToJson(Devices data) => json.encode(data.toJson());
 
 class Devices {
   Devices({
@@ -35,9 +28,8 @@ class Devices {
         macAddress: json["mac_address"],
         name: json["name"],
         power: json["power"],
-        records: json['records'] ?? false
-            ? List<Record>.from(json["records"].map((x) => Record.fromJson(x)))
-            : [],
+        records:
+            List<Record>.from(json["records"].map((x) => Record.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {

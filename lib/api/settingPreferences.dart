@@ -17,5 +17,6 @@ class SettingsPreferences {
   static Future applyFormUri(String uri) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return await prefs.setString('uri', uri);
+    //'key','value'
   }
 }
