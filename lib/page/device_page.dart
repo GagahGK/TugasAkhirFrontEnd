@@ -78,6 +78,7 @@ class _DevicePageState extends State<DevicePage> {
         final record = records[index];
         return ListTile(
           title: Text(record.kwh.toString()),
+          subtitle: Text(index.toString()),
         );
       });
 }
