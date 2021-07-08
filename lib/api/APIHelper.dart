@@ -41,11 +41,12 @@ class DeviceApi {
     SettingsPreferences sp = await SettingsPreferences.getSettings();
     String uri = sp.uri ?? 'localhost';
     try {
-      var response = await http.get(uri + "$deviceId" + "/records");
+      var response = await http.get(uri + "/$deviceId" + "/records");
       print(uri);
       print(response.statusCode);
 
       if (response.statusCode == 200) {
+        print("get records");
         print(response.body);
         return deviceFromJson(response.body);
       } else {
@@ -65,11 +66,13 @@ class RecordAPI {
     DateTime dateStart00 = returnDate(dateStart);
     DateTime dateEnd00 = dateStart00.add(Duration(days: 1));
     try {
-      var response = await http.get(uri +
-          "$deviceId" +
+      String request = "/devices" +
+          "/$deviceId" +
           "/records" +
           "/${dateStart00.toIso8601String()}" +
-          "/${dateEnd00.toIso8601String()}");
+          "/${dateEnd00.toIso8601String()}";
+      print(uri + request);
+      var response = await http.get(uri + request);
       print(uri);
       print(response.statusCode);
 
