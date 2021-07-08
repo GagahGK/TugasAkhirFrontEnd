@@ -35,6 +35,7 @@ class DeviceApi {
 
   // =======================================================
   // Static Method untuk dapetin record dari api uri/records
+  // To be replaced with getRecord() from RecordAPI class
   // =======================================================
   static Future<Devices> getDeviceRecord(int deviceId) async {
     SettingsPreferences sp = await SettingsPreferences.getSettings();
