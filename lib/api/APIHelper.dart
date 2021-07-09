@@ -79,6 +79,8 @@ class RecordAPI {
       if (response.statusCode == 200) {
         print(response.body);
         return recordsFromJson(response.body);
+      } else if (response.statusCode == 404) {
+        return Future.error("Data tidak tersedia silahkan pilih tanggal lain");
       } else {
         throw Exception('Failed to load devices');
       }
@@ -97,3 +99,5 @@ DateTime returnDate(DateTime date) {
       microseconds: date.microsecond));
   return date;
 }
+
+class ClusterAPI {}
