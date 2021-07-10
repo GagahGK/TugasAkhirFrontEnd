@@ -6,7 +6,7 @@ import 'package:futurebuilder_example/model/devices.dart';
 import 'package:futurebuilder_example/api/APIHelper.dart';
 
 class DevicePage extends StatefulWidget {
-  final Devices device;
+  final Device device;
   // final List<DateTime> allowedDay;
   const DevicePage({Key key, @required this.device}) : super(key: key);
 
@@ -15,88 +15,114 @@ class DevicePage extends StatefulWidget {
 }
 
 class _DevicePageState extends State<DevicePage> {
-  final Devices device;
+  final Device device;
   // final List<DateTime> allowedDay;
   _DevicePageState(this.device);
   DateTime date = DateTime.now();
-  // var dayFormat = DateFormat.yMd(date);
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text(widget.device.name),
-        ),
-        body: Column(
-          children: [
-            Flexible(
-              child: Stack(
+  Widget build(BuildContext context) => DefaultTabController(
+        initialIndex: 0,
+        length: 3,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(widget.device.name),
+            bottom: TabBar(
+              tabs: [
+                Tab(
+                  icon: Icon(Icons.power),
+                ),
+                Tab(
+                  icon: Icon(Icons.power),
+                ),
+                Tab(
+                  icon: Icon(Icons.power),
+                )
+              ],
+            ),
+          ),
+          body: TabBarView(
+            children: [
+              Column(
                 children: [
-                  FutureBuilder<List<Record>>(
-                    future: RecordAPI.getRecord(device.id, date),
-                    builder: (context, snapshot) {
-                      final deviceWithRecord = snapshot.data;
-                      switch (snapshot.connectionState) {
-                        case ConnectionState.waiting:
-                          return Center(child: CircularProgressIndicator());
-                        default:
-                          if (snapshot.hasError) {
-                            return Center(
-                                child: Text('error ${snapshot.error}'));
-                          } else {
-                            return buildRecordList(deviceWithRecord);
-                          }
-                      }
-                    },
+                  Flexible(
+                    child: Stack(
+                      children: [
+                        FutureBuilder<List<Record>>(
+                          future: RecordAPI.getRecord(device.id, date),
+                          builder: (context, snapshot) {
+                            final deviceWithRecord = snapshot.data;
+                            switch (snapshot.connectionState) {
+                              case ConnectionState.waiting:
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              default:
+                                if (snapshot.hasError) {
+                                  return Center(
+                                      child: Text('error ${snapshot.error}'));
+                                } else {
+                                  return buildRecordGraph(deviceWithRecord);
+                                }
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                   ),
+                  Flexible(
+                    child: Stack(
+                      children: [
+                        FutureBuilder<List<Record>>(
+                          future: RecordAPI.getRecord(device.id, date),
+                          builder: (context, snapshot) {
+                            final deviceWithRecord = snapshot.data;
+                            switch (snapshot.connectionState) {
+                              case ConnectionState.waiting:
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              default:
+                                if (snapshot.hasError) {
+                                  return Center(
+                                      child: Text('error ${snapshot.error}'));
+                                } else {
+                                  return buildRecordGraph(deviceWithRecord);
+                                }
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  ListTileTheme(
+                      tileColor: Colors.tealAccent,
+                      child: ListTile(
+                        title: Text(
+                            "Date : ${DateFormat('yyyy-MM-dd').format(date)}"),
+                        subtitle: Text("$date"),
+                        leading: Icon(Icons.date_range),
+                        onTap: () {
+                          showDatePicker(
+                                  context: context,
+                                  initialDate: date,
+                                  firstDate: DateTime.parse("2010-01-01"),
+                                  lastDate: DateTime.now())
+                              .then((dateSet) {
+                            if (dateSet != null)
+                              setState(() {
+                                date = dateSet ?? date;
+                              });
+                          });
+                        },
+                      ))
                 ],
               ),
-            ),
-            Flexible(
-              child: Stack(
-                children: [
-                  FutureBuilder<List<Record>>(
-                    future: RecordAPI.getRecord(device.id, date),
-                    builder: (context, snapshot) {
-                      final deviceWithRecord = snapshot.data;
-                      switch (snapshot.connectionState) {
-                        case ConnectionState.waiting:
-                          return Center(child: CircularProgressIndicator());
-                        default:
-                          if (snapshot.hasError) {
-                            return Center(
-                                child: Text('error ${snapshot.error}'));
-                          } else {
-                            return buildRecordList(deviceWithRecord);
-                          }
-                      }
-                    },
-                  ),
-                ],
-              ),
-            ),
-            ListTileTheme(
-                tileColor: Colors.tealAccent,
-                child: ListTile(
-                  title:
-                      Text("Date : ${DateFormat('yyyy-MM-dd').format(date)}"),
-                  leading: Icon(Icons.date_range),
-                  onTap: () {
-                    showDatePicker(
-                            context: context,
-                            initialDate: date,
-                            firstDate: DateTime.parse("2010-01-01"),
-                            lastDate: DateTime.now())
-                        .then((dateSet) {
-                      setState(() {
-                        date = dateSet ?? date;
-                      });
-                    });
-                  },
-                ))
-          ],
+              Container(),
+              Container()
+            ],
+          ),
         ),
       );
 
-  Widget buildRecordList(List<Record> records) => SfCartesianChart(
+  Widget buildRecordGraph(List<Record> records) => SfCartesianChart(
         trackballBehavior: TrackballBehavior(
             // Enables the trackball
             enable: true,

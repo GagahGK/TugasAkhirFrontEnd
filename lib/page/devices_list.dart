@@ -7,7 +7,7 @@ import 'package:futurebuilder_example/page/device_page.dart';
 class DeviceListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
-        body: FutureBuilder<List<Devices>>(
+        body: FutureBuilder<List<Device>>(
           future: DeviceApi.getDevices(),
           builder: (context, snapshot) {
             final devices = snapshot.data;
@@ -26,7 +26,7 @@ class DeviceListPage extends StatelessWidget {
         ),
       );
 
-  Widget buildDevices(List<Devices> devices) => ListView.builder(
+  Widget buildDevices(List<Device> devices) => ListView.builder(
         physics: BouncingScrollPhysics(),
         itemCount: devices.length,
         itemBuilder: (context, index) {
@@ -39,7 +39,10 @@ class DeviceListPage extends StatelessWidget {
             title: Text(device.name),
             leading: CircleAvatar(
               backgroundColor: Colors.purpleAccent.shade100,
-              child: Text(device.name[0]),
+              child: Text(device.name[0] +
+                  (device.name.split(" ").length > 1
+                      ? device.name.split(" ").elementAt(1)[0]
+                      : "")),
             ),
             subtitle: Text(device.macAddress),
           );

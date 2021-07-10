@@ -1,11 +1,14 @@
+import 'dart:html';
+
 import 'package:futurebuilder_example/api/settingPreferences.dart';
 
 //import 'package:flutter/material.dart';
 import 'package:futurebuilder_example/model/devices.dart';
+import 'package:futurebuilder_example/model/cluster.dart';
 import 'package:http/http.dart' as http;
 
 class DeviceApi {
-  static Future<List<Devices>> getDevices() async {
+  static Future<List<Device>> getDevices() async {
     SettingsPreferences sp = await SettingsPreferences.getSettings();
     String uri = sp.uri ?? 'localhost';
     try {
@@ -37,7 +40,7 @@ class DeviceApi {
   // Static Method untuk dapetin record dari api uri/records
   // To be replaced with getRecord() from RecordAPI class
   // =======================================================
-  static Future<Devices> getDeviceRecord(int deviceId) async {
+  static Future<Device> getDeviceRecord(int deviceId) async {
     SettingsPreferences sp = await SettingsPreferences.getSettings();
     String uri = sp.uri ?? 'localhost';
     try {
@@ -62,8 +65,8 @@ class RecordAPI {
   static Future<List<Record>> getRecord(
       int deviceId, DateTime dateStart) async {
     SettingsPreferences sp = await SettingsPreferences.getSettings();
-    String uri = sp.uri ?? 'localhost';
-    DateTime dateStart00 = returnDate(dateStart);
+    String uri = sp.uri ?? 'http://localhost:8000';
+    DateTime dateStart00 = returnDate00(dateStart);
     DateTime dateEnd00 = dateStart00.add(Duration(days: 1));
     try {
       String request = "/devices" +
@@ -90,7 +93,10 @@ class RecordAPI {
   }
 }
 
-DateTime returnDate(DateTime date) {
+DateTime returnDate00(DateTime date) {
+  //return date to 00
+  //example date = 2020-12-12T12:32:12:23Z
+  //returned date = 2020-12-12T00:00:00:00Z
   date = date.subtract(Duration(
       hours: date.hour,
       minutes: date.minute,
@@ -100,4 +106,84 @@ DateTime returnDate(DateTime date) {
   return date;
 }
 
-class ClusterAPI {}
+class ClusterAPI {
+  static List categoryList = ['hourly', 'daily'];
+  static Future<List<Cluster>> getCluster(
+      DateTime dateStart, DateTime dateEnd, int category, int deviceId) async {
+    SettingsPreferences sp = await SettingsPreferences.getSettings();
+    String uri = sp.uri ?? 'http://localhost:8000';
+    String categoryName = categoryList[category];
+    try {
+      String request = "/devices" +
+          "/$deviceId" +
+          "/cluster" +
+          "/$category" +
+          "/${dateStart.toIso8601String()}" +
+          "/${dateEnd.toIso8601String()}";
+
+      var response = await http.get(uri + request);
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        print(response.body);
+        return clustersFromJson(response.body);
+      } else if (response.statusCode == 404) {
+        return Future.error("Data tidak tersedia silahkan pilih tanggal lain");
+      } else {
+        throw Exception('Failed to load cluster');
+      }
+    } on ArgumentError catch (e) {
+      return Future.error("Please Provide correct API URL");
+    }
+  }
+
+  //todo getCluster
+  static Future<List<Cluster>> getClusterDaily(
+      int deviceId, DateTime dateStart, int categoryId) async {
+    SettingsPreferences sp = await SettingsPreferences.getSettings();
+    String uri = sp.uri ?? 'http://localhost:8000';
+    DateTime dateStart00 = returnDate00(dateStart);
+    DateTime dateEnd00 = dateStart00.add(Duration(days: 7));
+    final String category = "daily";
+    if (categoryId == 0) {
+      //Weekly
+      dateEnd00 = dateStart00.add(Duration(days: 7));
+    } else {
+      //Monthly
+      dateEnd00 =
+          DateTime(dateStart00.year, dateStart00.month + 1, dateStart00.day);
+    }
+    try {
+      String request = "/devices" +
+          "/$deviceId" +
+          "/cluster" +
+          "/$category" +
+          "/${dateStart00.toIso8601String()}" +
+          "/${dateEnd00.toIso8601String()}";
+      print(uri + request);
+      var response = await http.get(uri + request);
+      print(uri);
+      print(response.statusCode);
+
+      if (response.statusCode == 200) {
+        print(response.body);
+        return clustersFromJson(response.body);
+      } else if (response.statusCode == 404) {
+        return Future.error("Data tidak tersedia silahkan pilih tanggal lain");
+      } else {
+        throw Exception('Failed to load cluster');
+      }
+    } on ArgumentError catch (e) {
+      return Future.error("Please Provide correct API URL");
+    }
+  }
+
+  static Future<Cluster> getClusterDay(
+      DateTime day, int deviceId, int categoryId) async {
+    List<Cluster> clusterList =
+        await getClusterDaily(deviceId, day, categoryId);
+    day = returnDate00(day);
+    for (var i = 0; i < clusterList.length; i++) {
+      if (clusterList[i].timestamp == day) return clusterList[i];
+    }
+  }
+}

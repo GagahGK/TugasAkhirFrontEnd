@@ -4,19 +4,19 @@
 
 import 'dart:convert';
 
-Devices deviceFromJson(String str) => Devices.fromJson(json.decode(str));
-
 List<Record> recordsFromJson(String str) =>
     List<Record>.from(json.decode(str).map((x) => Record.fromJson(x)));
 
-List<Devices> devicesFromJson(String str) =>
-    List<Devices>.from(json.decode(str).map((x) => Devices.fromJson(x)));
+Device deviceFromJson(String str) => Device.fromJson(json.decode(str));
 
-String devicesToJson(List<Devices> data) =>
+List<Device> devicesFromJson(String str) =>
+    List<Device>.from(json.decode(str).map((x) => Device.fromJson(x)));
+
+String devicesToJson(List<Device> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-class Devices {
-  Devices({
+class Device {
+  Device({
     this.id,
     this.macAddress,
     this.name,
@@ -30,7 +30,7 @@ class Devices {
   String power;
   List<Record> records;
 
-  factory Devices.fromJson(Map<String, dynamic> json) => Devices(
+  factory Device.fromJson(Map<String, dynamic> json) => Device(
         id: json["id"],
         macAddress: json["mac_address"],
         name: json["name"],

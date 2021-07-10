@@ -4,7 +4,7 @@ import 'package:futurebuilder_example/api/APIHelper.dart';
 import 'package:intl/intl.dart';
 
 class DevicePage extends StatefulWidget {
-  final Devices device;
+  final Device device;
   const DevicePage({Key key, @required this.device}) : super(key: key);
 
   @override
@@ -12,7 +12,7 @@ class DevicePage extends StatefulWidget {
 }
 
 class _DevicePageState extends State<DevicePage> {
-  final Devices device;
+  final Device device;
   _DevicePageState(this.device);
   DateTime date = DateTime.now();
   // var dayFormat = DateFormat.yMd(date);
