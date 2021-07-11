@@ -6,6 +6,7 @@ import 'package:futurebuilder_example/api/settingPreferences.dart';
 import 'package:futurebuilder_example/model/devices.dart';
 import 'package:futurebuilder_example/model/cluster.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class DeviceApi {
   static Future<List<Device>> getDevices() async {
@@ -13,11 +14,10 @@ class DeviceApi {
     String uri = sp.uri ?? 'localhost';
     try {
       var response = await http.get(uri + "/devices");
-      print(uri);
       print(response.statusCode);
 
       if (response.statusCode == 200) {
-        print(response.body);
+        // print(response.body);
         return devicesFromJson(response.body);
       } else {
         throw Exception('Failed to load devices');
@@ -45,7 +45,6 @@ class DeviceApi {
     String uri = sp.uri ?? 'localhost';
     try {
       var response = await http.get(uri + "/$deviceId" + "/records");
-      print(uri);
       print(response.statusCode);
 
       if (response.statusCode == 200) {
@@ -117,10 +116,10 @@ class ClusterAPI {
       String request = "/devices" +
           "/$deviceId" +
           "/cluster" +
-          "/$category" +
-          "/${dateStart.toIso8601String()}" +
-          "/${dateEnd.toIso8601String()}";
-
+          "/${categoryList[category]}" +
+          "/${DateFormat("yyyy-MM-dd").format(dateStart)}" +
+          "/${DateFormat("yyyy-MM-dd").format(dateEnd)}";
+      print(request);
       var response = await http.get(uri + request);
       print(response.statusCode);
       if (response.statusCode == 200) {

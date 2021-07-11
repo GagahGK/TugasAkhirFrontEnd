@@ -48,6 +48,7 @@ class _ClusterChartViewState extends State<ClusterChartView> {
   int select = -1;
   DateTime dateStart = DateTime.now().subtract(Duration(hours: 1));
   DateTime dateEnd = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -86,7 +87,7 @@ class _ClusterChartViewState extends State<ClusterChartView> {
                               return Center(
                                   child: Text('error ${snapshot.error}'));
                             } else {
-                              return Text("yeee");
+                              return Center(child: Text("yeee"));
                             }
                         }
                       },
@@ -98,7 +99,7 @@ class _ClusterChartViewState extends State<ClusterChartView> {
             tileColor: Colors.tealAccent,
             child: ListTile(
               title: Text(
-                  "Start Date : ${DateFormat('yyyy-MM-dd').format(dateStart)}"),
+                  "Start Date : ${DateFormat('yyyy-MM-dd H:m').format(dateStart)}"),
               // subtitle: Text("Start Date"),
               leading: Icon(Icons.date_range),
               onTap: () async {
@@ -107,13 +108,13 @@ class _ClusterChartViewState extends State<ClusterChartView> {
                     initialDate: dateStart,
                     firstDate: DateTime.parse("2010-01-01"),
                     lastDate: dateEnd);
-                var timeSet = await showTimePicker(
-                    context: context, initialTime: TimeOfDay.now());
-                if (dateSet == null || timeSet == null) {
+                // var timeSet = await showTimePicker(
+                //     context: context, initialTime: TimeOfDay.now());
+                if (dateSet == null /*|| timeSet == null*/) {
                   return;
                 }
-                dateSet = DateTime(dateSet.year, dateSet.month, dateSet.day,
-                    timeSet.hour, timeSet.minute);
+                // dateSet = DateTime(dateSet.year, dateSet.month, dateSet.day,
+                //     timeSet.hour, timeSet.minute);
                 if (dateSet.isAfter(dateEnd) ||
                     dateSet.isAtSameMomentAs(dateEnd)) {
                   showDialog(
@@ -149,7 +150,7 @@ class _ClusterChartViewState extends State<ClusterChartView> {
             tileColor: Colors.tealAccent,
             child: ListTile(
               title: Text(
-                  "End Date : ${DateFormat('yyyy-MM-dd').format(dateEnd)}"),
+                  "End Date : ${DateFormat('yyyy-MM-dd H:m').format(dateEnd)}"),
               // subtitle: Text("End Date"),
               leading: Icon(Icons.date_range),
               onTap: () async {
@@ -158,13 +159,13 @@ class _ClusterChartViewState extends State<ClusterChartView> {
                     initialDate: dateEnd,
                     firstDate: dateStart,
                     lastDate: DateTime.now());
-                var timeSet = await showTimePicker(
-                    context: context, initialTime: TimeOfDay.now());
-                if (dateSet == null || timeSet == null) {
+                // var timeSet = await showTimePicker(
+                //     context: context, initialTime: TimeOfDay.now());
+                if (dateSet == null /*|| timeSet == null*/) {
                   return;
                 }
-                dateSet = DateTime(dateSet.year, dateSet.month, dateSet.day,
-                    timeSet.hour, timeSet.minute);
+                // dateSet = DateTime(dateSet.year, dateSet.month, dateSet.day,
+                //     timeSet.hour, timeSet.minute);
                 if (dateSet.isBefore(dateStart) ||
                     dateSet.isAtSameMomentAs(dateStart)) {
                   showDialog(

@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:futurebuilder_example/page/devices_list.dart';
 
 import 'package:futurebuilder_example/page/cluster/clusterHourly.dart';
-import 'package:futurebuilder_example/page/user_local_page.dart';
 import 'package:futurebuilder_example/page/settings_page.dart';
 
 Future main() async {
@@ -107,8 +106,11 @@ class _MainPageState extends State<MainPage> {
       case 0:
         return DeviceListPage();
       case 1:
-        return TabBarView(
-            children: [ClusterHourly(), ClusterHourly(), Container()]);
+        return TabBarView(children: [
+          DevicesListCluster(),
+          DevicesListCluster(),
+          Container()
+        ]);
       case 2:
         return SettingsPage();
       default:
