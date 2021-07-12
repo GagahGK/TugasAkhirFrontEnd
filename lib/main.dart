@@ -1,6 +1,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:futurebuilder_example/page/cluster/clusterMonthly.dart';
 
 // import classes
 import 'package:futurebuilder_example/page/devicePage/deviceList.dart';
@@ -19,7 +20,7 @@ Future main() async {
 }
 
 class MyApp extends StatelessWidget {
-  static final String title = 'Future Builder & Json';
+  static final String title = 'Monitoring Listrik';
 
   @override
   Widget build(BuildContext context) => MaterialApp(
@@ -120,7 +121,7 @@ class _MainPageState extends State<MainPage> {
         return TabBarView(children: [
           DevicesListClusterHourly(),
           DevicesListClusterDaily(),
-          Container(),
+          DevicesListClusterMonthly(),
           Container()
         ]);
       case 2:

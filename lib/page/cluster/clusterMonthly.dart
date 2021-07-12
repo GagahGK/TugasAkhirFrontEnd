@@ -6,15 +6,15 @@ import 'package:futurebuilder_example/model/devices.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class DevicesListClusterHourly extends StatefulWidget {
-  const DevicesListClusterHourly({Key key}) : super(key: key);
+class DevicesListClusterMonthly extends StatefulWidget {
+  const DevicesListClusterMonthly({Key key}) : super(key: key);
 
   @override
-  _DevicesListClusterHourlyState createState() =>
-      _DevicesListClusterHourlyState();
+  _DevicesListClusterMonthlyState createState() =>
+      _DevicesListClusterMonthlyState();
 }
 
-class _DevicesListClusterHourlyState extends State<DevicesListClusterHourly> {
+class _DevicesListClusterMonthlyState extends State<DevicesListClusterMonthly> {
   @override
   Widget build(BuildContext context) => Scaffold(
         body: FutureBuilder<List<Device>>(
@@ -79,7 +79,7 @@ class _ClusterChartViewState extends State<ClusterChartView> {
                   children: [
                     FutureBuilder<List<Cluster>>(
                       future:
-                          ClusterAPI.getCluster(dateStart, dateEnd, 0, select),
+                          ClusterAPI.getCluster(dateStart, dateEnd, 2, select),
                       builder: (context, snapshot) {
                         final clusterDataDaily = snapshot.data;
                         switch (snapshot.connectionState) {
@@ -105,7 +105,7 @@ class _ClusterChartViewState extends State<ClusterChartView> {
                   children: [
                     FutureBuilder<List<Cluster>>(
                       future:
-                          ClusterAPI.getCluster(dateStart, dateEnd, 0, select),
+                          ClusterAPI.getCluster(dateStart, dateEnd, 2, select),
                       builder: (context, snapshot) {
                         final clusterDataDaily = snapshot.data;
                         switch (snapshot.connectionState) {
@@ -135,7 +135,7 @@ class _ClusterChartViewState extends State<ClusterChartView> {
             tileColor: Colors.tealAccent,
             child: ListTile(
               title: Text(
-                  "Start Date : ${DateFormat('yyyy-MM-dd').format(dateStart)}"),
+                  "Start Date : ${DateFormat('yyyy-MM').format(dateStart)}"),
               // subtitle: Text("Start Date"),
               leading: Icon(Icons.date_range),
               onTap: () async {
@@ -185,8 +185,8 @@ class _ClusterChartViewState extends State<ClusterChartView> {
         ListTileTheme(
             tileColor: Colors.tealAccent,
             child: ListTile(
-              title: Text(
-                  "End Date : ${DateFormat('yyyy-MM-dd').format(dateEnd)}"),
+              title:
+                  Text("End Date : ${DateFormat('yyyy-MM').format(dateEnd)}"),
               // subtitle: Text("End Date"),
               leading: Icon(Icons.date_range),
               onTap: () async {
@@ -263,23 +263,25 @@ class _ClusterChartViewState extends State<ClusterChartView> {
     );
   }
 
-  Widget buildClusterTable(List<Cluster> clusters) => SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: DataTable(
-          columns: <DataColumn>[
-            DataColumn(label: Text('Consumption')),
-            DataColumn(label: Expanded(child: Text('Cluster Type'))),
-            DataColumn(label: Text('Timestamp'))
-          ],
-          rows: clusters
-              .map((e) => DataRow(cells: <DataCell>[
-                    DataCell(Text("${e.powerConsumption}")),
-                    DataCell(
-                        Text("${ClusterCount.clusterCategoryName[e.cluster]}")),
-                    DataCell(Text(
-                        "${DateFormat('yyyy-MM-dd H:mm').format(e.timestamp)}")),
-                  ]))
-              .toList(),
+  Widget buildClusterTable(List<Cluster> clusters) => Expanded(
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: DataTable(
+            columns: <DataColumn>[
+              DataColumn(label: Text('Consumption')),
+              DataColumn(label: Expanded(child: Text('Cluster'))),
+              DataColumn(label: Text('Timestamp'))
+            ],
+            rows: clusters
+                .map((e) => DataRow(cells: <DataCell>[
+                      DataCell(Text("${e.powerConsumption}")),
+                      DataCell(Text(
+                          "${ClusterCount.clusterCategoryName[e.cluster]}")),
+                      DataCell(
+                          Text("${DateFormat('yyyy-MM').format(e.timestamp)}")),
+                    ]))
+                .toList(),
+          ),
         ),
       );
 }
