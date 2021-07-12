@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:futurebuilder_example/model/devices.dart';
-import 'package:futurebuilder_example/api/APIHelper.dart';
+import 'package:futurebuilder_example/api/apiHelper.dart';
 import 'package:intl/intl.dart';
 
 class DevicePage extends StatefulWidget {

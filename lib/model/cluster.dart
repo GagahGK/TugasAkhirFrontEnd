@@ -30,7 +30,7 @@ class Cluster {
   factory Cluster.fromJson(Map<String, dynamic> json) => Cluster(
         id: json["id"],
         timestamp: DateTime.parse(json["timestamp"]),
-        deviceId: json["device_id"],
+        deviceId: json["device_id"].toInt(),
         kwh: json["kwh"].toDouble(),
         powerConsumption: json["power_consumption"].toDouble(),
         cluster: json["cluster"],

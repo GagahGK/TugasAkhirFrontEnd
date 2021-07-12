@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:futurebuilder_example/api/APIHelper.dart';
+import 'package:futurebuilder_example/api/apiHelper.dart';
 import 'package:futurebuilder_example/model/devices.dart';
-import 'package:futurebuilder_example/page/device_page.dart';
+import 'package:futurebuilder_example/page/devicePage/devicePageGraph.dart';
 // import 'package:futurebuilder_example/page/deviceDetail.dart';
 
 class DeviceListPage extends StatelessWidget {
@@ -19,14 +19,14 @@ class DeviceListPage extends StatelessWidget {
                 if (snapshot.hasError) {
                   return Center(child: Text('error ${snapshot.error}'));
                 } else {
-                  return buildDevices(devices);
+                  return buildDevicesList(devices);
                 }
             }
           },
         ),
       );
 
-  Widget buildDevices(List<Device> devices) => ListView.builder(
+  Widget buildDevicesList(List<Device> devices) => ListView.builder(
         physics: BouncingScrollPhysics(),
         itemCount: devices.length,
         itemBuilder: (context, index) {

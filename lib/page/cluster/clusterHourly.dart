@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:futurebuilder_example/api/APIHelper.dart';
+import 'package:futurebuilder_example/api/apiHelper.dart';
 import 'package:futurebuilder_example/model/cluster.dart';
+import 'package:futurebuilder_example/model/clusterCount.dart';
 import 'package:futurebuilder_example/model/devices.dart';
 import 'package:intl/intl.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
-class DevicesListCluster extends StatefulWidget {
-  const DevicesListCluster({Key key}) : super(key: key);
+class DevicesListClusterHourly extends StatefulWidget {
+  const DevicesListClusterHourly({Key key}) : super(key: key);
 
   @override
-  _DevicesListClusterState createState() => _DevicesListClusterState();
+  _DevicesListClusterHourlyState createState() =>
+      _DevicesListClusterHourlyState();
 }
 
-class _DevicesListClusterState extends State<DevicesListCluster> {
+class _DevicesListClusterHourlyState extends State<DevicesListClusterHourly> {
   @override
   Widget build(BuildContext context) => Scaffold(
         body: FutureBuilder<List<Device>>(
@@ -78,7 +81,7 @@ class _ClusterChartViewState extends State<ClusterChartView> {
                       future:
                           ClusterAPI.getCluster(dateStart, dateEnd, 0, select),
                       builder: (context, snapshot) {
-                        final deviceWithRecord = snapshot.data;
+                        final clusterDataDaily = snapshot.data;
                         switch (snapshot.connectionState) {
                           case ConnectionState.waiting:
                             return Center(child: CircularProgressIndicator());
@@ -87,7 +90,40 @@ class _ClusterChartViewState extends State<ClusterChartView> {
                               return Center(
                                   child: Text('error ${snapshot.error}'));
                             } else {
-                              return Center(child: Text("yeee"));
+                              return buildClusterGraph(clusterDataDaily);
+                            }
+                        }
+                      },
+                    ),
+                  ],
+                ),
+        ),
+        Flexible(
+          child: select == -1
+              ? Center(child: Text("user belum memilih device"))
+              : Stack(
+                  children: [
+                    FutureBuilder<List<Cluster>>(
+                      future:
+                          ClusterAPI.getCluster(dateStart, dateEnd, 0, select),
+                      builder: (context, snapshot) {
+                        final clusterDataDaily = snapshot.data;
+                        switch (snapshot.connectionState) {
+                          case ConnectionState.waiting:
+                            return Center(child: CircularProgressIndicator());
+                          default:
+                            if (snapshot.hasError) {
+                              print(snapshot.error);
+                              return Center(
+                                  child: Column(
+                                children: [
+                                  Text('error ${snapshot.error}'),
+                                  Text(
+                                      'Data not available, try to select earlier starting date')
+                                ],
+                              ));
+                            } else {
+                              return buildClusterTable(clusterDataDaily);
                             }
                         }
                       },
@@ -200,4 +236,81 @@ class _ClusterChartViewState extends State<ClusterChartView> {
       ],
     );
   }
+
+  Widget buildClusterGraph(List<Cluster> clusters) {
+    var count = [0, 0, 0];
+    clusters.forEach((element) {
+      count[element.cluster]++;
+    });
+    var clustersCount =
+        List<ClusterCount>.from(count.asMap().entries.map((entry) {
+      int idx = entry.key;
+      int val = entry.value;
+      return new ClusterCount(
+          value: val, clusterCategory: ClusterCount.clusterCategoryName[idx]);
+    }));
+
+    return SfCircularChart(
+      series: <CircularSeries>[
+        PieSeries<ClusterCount, String>(
+          dataSource: clustersCount,
+          xValueMapper: (ClusterCount clusterCount, _) =>
+              clusterCount.clusterCategory,
+          yValueMapper: (ClusterCount clusterCount, _) => clusterCount.value,
+        )
+      ],
+    );
+  }
+
+  Widget buildClusterTable(List<Cluster> clusters) => InteractiveViewer(
+        child: DataTable(
+          columns: <DataColumn>[
+            DataColumn(label: Text('Consumption')),
+            DataColumn(label: Text('Cluster Type')),
+            DataColumn(label: Text('Timestamp'))
+          ],
+          rows: [
+            DataRow(cells: <DataCell>[
+              DataCell(Text("test")),
+              DataCell(Text("test")),
+              DataCell(Text("test")),
+            ]),
+            DataRow(cells: <DataCell>[
+              DataCell(Text("test")),
+              DataCell(Text("test")),
+              DataCell(Text("test")),
+            ]),
+            DataRow(cells: <DataCell>[
+              DataCell(Text("test")),
+              DataCell(Text("test")),
+              DataCell(Text("test")),
+            ]),
+            DataRow(cells: <DataCell>[
+              DataCell(Text("test")),
+              DataCell(Text("test")),
+              DataCell(Text("test")),
+            ]),
+            DataRow(cells: <DataCell>[
+              DataCell(Text("test")),
+              DataCell(Text("test")),
+              DataCell(Text("test")),
+            ]),
+            DataRow(cells: <DataCell>[
+              DataCell(Text("test")),
+              DataCell(Text("test")),
+              DataCell(Text("test")),
+            ]),
+            DataRow(cells: <DataCell>[
+              DataCell(Text("test")),
+              DataCell(Text("test")),
+              DataCell(Text("test")),
+            ]),
+            DataRow(cells: <DataCell>[
+              DataCell(Text("test")),
+              DataCell(Text("test")),
+              DataCell(Text("test")),
+            ]),
+          ],
+        ),
+      );
 }

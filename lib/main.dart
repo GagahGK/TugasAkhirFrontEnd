@@ -1,9 +1,11 @@
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:futurebuilder_example/page/devices_list.dart';
-
+// import classes
+import 'package:futurebuilder_example/page/devicePage/deviceList.dart';
 import 'package:futurebuilder_example/page/cluster/clusterHourly.dart';
+import 'package:futurebuilder_example/page/cluster/clusterDaily.dart';
 import 'package:futurebuilder_example/page/settings_page.dart';
 
 Future main() async {
@@ -42,16 +44,16 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int index = 2;
-  TabBar bottomBar = null;
+  int bottomNavBarIndex = 2;
+  TabBar bottomBar;
   @override
   Widget build(BuildContext context) => DefaultTabController(
         initialIndex: 0,
-        length: 3,
+        length: 4,
         child: Scaffold(
           appBar: AppBar(title: Text(widget.title), bottom: bottomBar),
           bottomNavigationBar: BottomNavigationBar(
-            currentIndex: index,
+            currentIndex: bottomNavBarIndex,
             selectedItemColor: Colors.teal,
             items: [
               BottomNavigationBarItem(
@@ -67,30 +69,39 @@ class _MainPageState extends State<MainPage> {
                 label: ('Settings'),
               ),
             ],
-            onTap: _onTap,
+            onTap: _onTapClusterTab,
           ),
-          body: buildPages(),
+          body: buildBottomNavBarPages(),
         ),
       );
 
-  void _onTap(int index) {
-    if (index != this.index) {
+  void _onTapClusterTab(int index) {
+    List<Tab> clusterTab = [
+      Tab(
+        icon: Icon(FluentIcons.clock_12_regular),
+        text: "Hourly",
+      ),
+      Tab(
+        icon: Icon(FluentIcons.calendar_3_day_16_regular),
+        text: "Daily",
+      ),
+      Tab(
+        icon: Icon(FluentIcons.calendar_month_20_regular),
+        text: "Monthly",
+      ),
+      Tab(
+        icon: Icon(FluentIcons.building_retail_20_regular),
+        text: "Buildings",
+      )
+    ];
+
+    if (index != this.bottomNavBarIndex) {
       setState(() {
-        this.index = index;
+        this.bottomNavBarIndex = index;
         switch (index) {
           case 1:
             bottomBar = TabBar(
-              tabs: [
-                Tab(
-                  icon: Icon(Icons.power),
-                ),
-                Tab(
-                  icon: Icon(Icons.power),
-                ),
-                Tab(
-                  icon: Icon(Icons.power),
-                )
-              ],
+              tabs: clusterTab,
             );
             break;
           default:
@@ -100,15 +111,16 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
-  Widget buildPages() {
+  Widget buildBottomNavBarPages() {
     // bottomNavBarPageBuilder
-    switch (index) {
+    switch (bottomNavBarIndex) {
       case 0:
         return DeviceListPage();
       case 1:
         return TabBarView(children: [
-          DevicesListCluster(),
-          DevicesListCluster(),
+          DevicesListClusterHourly(),
+          DevicesListClusterDaily(),
+          Container(),
           Container()
         ]);
       case 2:

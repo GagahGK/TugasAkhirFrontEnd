@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:futurebuilder_example/api/settingPreferences.dart';
 
 //import 'package:flutter/material.dart';
@@ -106,7 +104,7 @@ DateTime returnDate00(DateTime date) {
 }
 
 class ClusterAPI {
-  static List categoryList = ['hourly', 'daily'];
+  static List categoryList = ['hourly', 'daily', 'monthly', 'devices'];
   static Future<List<Cluster>> getCluster(
       DateTime dateStart, DateTime dateEnd, int category, int deviceId) async {
     SettingsPreferences sp = await SettingsPreferences.getSettings();

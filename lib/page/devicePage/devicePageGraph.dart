@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import 'package:futurebuilder_example/model/devices.dart';
-import 'package:futurebuilder_example/api/APIHelper.dart';
+import 'package:futurebuilder_example/api/apiHelper.dart';
 
 class DevicePage extends StatefulWidget {
   final Device device;
@@ -156,8 +156,8 @@ class _DevicePageState extends State<DevicePage> {
           AreaSeries<Record, DateTime>(
               color: Colors.blueAccent,
               dataSource: records,
-              xValueMapper: (record, _) => record.timestamp,
-              yValueMapper: (record, _) => record.kwh)
+              xValueMapper: (Record record, _) => record.timestamp,
+              yValueMapper: (Record record, _) => record.kwh)
         ],
       );
 }
