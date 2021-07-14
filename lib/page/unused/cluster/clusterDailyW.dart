@@ -6,15 +6,16 @@ import 'package:futurebuilder_example/model/devices.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class DevicesListClusterDaily extends StatefulWidget {
-  const DevicesListClusterDaily({Key key}) : super(key: key);
+class DevicesListClusterDailyIterated extends StatefulWidget {
+  const DevicesListClusterDailyIterated({Key key}) : super(key: key);
 
   @override
-  _DevicesListClusterDailyState createState() =>
-      _DevicesListClusterDailyState();
+  _DevicesListClusterDailyIteratedState createState() =>
+      _DevicesListClusterDailyIteratedState();
 }
 
-class _DevicesListClusterDailyState extends State<DevicesListClusterDaily> {
+class _DevicesListClusterDailyIteratedState
+    extends State<DevicesListClusterDailyIterated> {
   @override
   Widget build(BuildContext context) => Scaffold(
         body: FutureBuilder<List<Device>>(
@@ -39,15 +40,19 @@ class _DevicesListClusterDailyState extends State<DevicesListClusterDaily> {
 
 class ClusterChartView extends StatefulWidget {
   final List<Device> devices;
-  const ClusterChartView({Key key, @required this.devices}) : super(key: key);
+  final category;
+  const ClusterChartView({Key key, @required this.devices, this.category})
+      : super(key: key);
 
   @override
-  _ClusterChartViewState createState() => _ClusterChartViewState(devices);
+  _ClusterChartViewState createState() =>
+      _ClusterChartViewState(devices, category);
 }
 
 class _ClusterChartViewState extends State<ClusterChartView> {
   final List<Device> devices;
-  _ClusterChartViewState(this.devices);
+  final category;
+  _ClusterChartViewState(this.devices, this.category);
   int select = -1;
   DateTime dateStart = DateTime.now().subtract(Duration(hours: 1));
   DateTime dateEnd = DateTime.now();
@@ -57,6 +62,7 @@ class _ClusterChartViewState extends State<ClusterChartView> {
     return Column(
       children: [
         DropdownButton(
+          isExpanded: true,
           value: select,
           onChanged: (int idSelect) {
             setState(() {
@@ -72,65 +78,31 @@ class _ClusterChartViewState extends State<ClusterChartView> {
             //.insert itu void biar bisa nge return ..insert
             ..insert(0, new DropdownMenuItem(value: -1, child: Text("Select"))),
         ),
-        Flexible(
-          child: select == -1
-              ? Center(child: Text("user belum memilih device"))
-              : Stack(
-                  children: [
-                    FutureBuilder<List<Cluster>>(
-                      future:
-                          ClusterAPI.getCluster(dateStart, dateEnd, 1, select),
-                      builder: (context, snapshot) {
-                        final clusterDataDaily = snapshot.data;
-                        switch (snapshot.connectionState) {
-                          case ConnectionState.waiting:
-                            return Center(child: CircularProgressIndicator());
-                          default:
-                            if (snapshot.hasError) {
-                              return Center(
-                                  child: Text('error ${snapshot.error}'));
-                            } else {
-                              return buildClusterGraph(clusterDataDaily);
-                            }
-                        }
-                      },
-                    ),
-                  ],
-                ),
-        ),
-        Flexible(
-          child: select == -1
-              ? Center(child: Text("user belum memilih device"))
-              : Stack(
-                  children: [
-                    FutureBuilder<List<Cluster>>(
-                      future:
-                          ClusterAPI.getCluster(dateStart, dateEnd, 1, select),
-                      builder: (context, snapshot) {
-                        final clusterDataDaily = snapshot.data;
-                        switch (snapshot.connectionState) {
-                          case ConnectionState.waiting:
-                            return Center(child: CircularProgressIndicator());
-                          default:
-                            if (snapshot.hasError) {
-                              print(snapshot.error);
-                              return Center(
-                                  child: Column(
-                                children: [
-                                  Text('error ${snapshot.error}'),
-                                  Text(
-                                      'Data not available, try to select earlier starting date')
-                                ],
-                              ));
-                            } else {
-                              return buildClusterTable(clusterDataDaily);
-                            }
-                        }
-                      },
-                    ),
-                  ],
-                ),
-        ),
+        FutureBuilder<List<Cluster>>(
+            future: ClusterAPI.getCluster(dateStart, dateEnd, 2, select),
+            builder: (context, snapshot) {
+              final clusterDataDaily = snapshot.data;
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting:
+                  return Center(child: CircularProgressIndicator());
+                default:
+                  if (snapshot.hasError) {
+                    print(snapshot.error);
+                    return Flexible(
+                      child: Center(
+                          child: Column(
+                        children: [
+                          Text('error ${snapshot.error}'),
+                          Text(
+                              'Data not available, try to select earlier starting date and make sure to select device')
+                        ],
+                      )),
+                    );
+                  } else {
+                    return buildPage(clusterDataDaily);
+                  }
+              }
+            }),
         ListTileTheme(
             tileColor: Colors.tealAccent,
             child: ListTile(
@@ -237,6 +209,21 @@ class _ClusterChartViewState extends State<ClusterChartView> {
     );
   }
 
+  Widget buildPage(List<Cluster> clusters) {
+    return Flexible(
+      child: Stack(
+        children: [
+          Column(
+            children: [
+              Flexible(child: Stack(children: [buildClusterGraph(clusters)])),
+              Flexible(child: Stack(children: [buildClusterTable(clusters)]))
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
   Widget buildClusterGraph(List<Cluster> clusters) {
     var count = [0, 0, 0];
     clusters.forEach((element) {
@@ -277,7 +264,7 @@ class _ClusterChartViewState extends State<ClusterChartView> {
                     DataCell(
                         Text("${ClusterCount.clusterCategoryName[e.cluster]}")),
                     DataCell(Text(
-                        "${DateFormat('yyyy-MM-dd').format(e.timestamp)}")),
+                        "${DateFormat('yyyy-MM-dd HH').format(e.timestamp)}")),
                   ]))
               .toList(),
         ),

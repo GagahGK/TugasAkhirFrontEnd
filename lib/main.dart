@@ -1,12 +1,10 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:futurebuilder_example/page/cluster/clusterMonthly.dart';
 
 // import classes
 import 'package:futurebuilder_example/page/devicePage/deviceList.dart';
-import 'package:futurebuilder_example/page/cluster/clusterHourly.dart';
-import 'package:futurebuilder_example/page/cluster/clusterDaily.dart';
+import 'package:futurebuilder_example/page/cluster/deviceCluster.dart';
 import 'package:futurebuilder_example/page/settings_page.dart';
 
 Future main() async {
@@ -119,9 +117,9 @@ class _MainPageState extends State<MainPage> {
         return DeviceListPage();
       case 1:
         return TabBarView(children: [
-          DevicesListClusterHourly(),
-          DevicesListClusterDaily(),
-          DevicesListClusterMonthly(),
+          DevicesListCluster(category: 0),
+          DevicesListCluster(category: 1),
+          DevicesListCluster(category: 2),
           Container()
         ]);
       case 2:
