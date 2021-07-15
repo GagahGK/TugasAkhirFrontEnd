@@ -109,7 +109,7 @@ class ClusterAPI {
       DateTime dateStart, DateTime dateEnd, int category, int deviceId) async {
     SettingsPreferences sp = await SettingsPreferences.getSettings();
     String uri = sp.uri ?? 'http://localhost:8000';
-    String categoryName = categoryList[category];
+    // String categoryName = categoryList[category];
     try {
       String request = "/devices" +
           "/$deviceId" +
@@ -125,6 +125,8 @@ class ClusterAPI {
         return clustersFromJson(response.body);
       } else if (response.statusCode == 404) {
         return Future.error("Data tidak tersedia silahkan pilih tanggal lain");
+      } else if (response.statusCode == 400) {
+        return Future.error("${response.body}");
       } else {
         throw Exception('Failed to load cluster');
       }
@@ -141,14 +143,17 @@ class ClusterAPI {
     DateTime dateStart00 = returnDate00(dateStart);
     DateTime dateEnd00 = dateStart00.add(Duration(days: 7));
     final String category = "daily";
-    if (categoryId == 0) {
-      //Weekly
-      dateEnd00 = dateStart00.add(Duration(days: 7));
-    } else {
-      //Monthly
-      dateEnd00 =
-          DateTime(dateStart00.year, dateStart00.month + 1, dateStart00.day);
-    }
+    // ================================================
+    // unused asalnya buat di halaman record list
+    // if (categoryId == 0) {
+    //   //Weekly
+    //   dateEnd00 = dateStart00.add(Duration(days: 7));
+    // } else {
+    //   //Monthly
+    //   dateEnd00 =
+    //       DateTime(dateStart00.year, dateStart00.month + 1, dateStart00.day);
+    // }
+    // ================================================
     try {
       String request = "/devices" +
           "/$deviceId" +

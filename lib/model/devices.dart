@@ -62,6 +62,10 @@ class Record {
   int deviceId;
   double kwh;
 
+  void setKwh(double kwh) {
+    this.kwh = kwh;
+  }
+
   factory Record.fromJson(Map<String, dynamic> json) => Record(
         id: json["id"],
         timestamp: DateTime.parse(json["timestamp"]),
