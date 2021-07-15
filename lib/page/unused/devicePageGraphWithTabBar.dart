@@ -26,61 +26,86 @@ class _DevicePageState extends State<DevicePage> {
   _DevicePageState(this.device);
   DateTime date = DateTime.now();
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text(widget.device.name),
-        ),
-        body: Column(
-          children: [
-            FutureBuilder<List<Record>>(
-              future: RecordAPI.getRecord(device.id, date),
-              builder: (context, snapshot) {
-                final deviceRecords = snapshot.data;
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting:
-                    return Center(child: CircularProgressIndicator());
-                  default:
-                    if (snapshot.hasError) {
-                      return Flexible(
-                        child: Stack(
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Center(child: Text('error ${snapshot.error}')),
-                              ],
-                            )
-                          ],
-                        ),
-                      );
-                    } else {
-                      return buildPage(deviceRecords);
-                    }
-                }
-              },
+  Widget build(BuildContext context) => DefaultTabController(
+        initialIndex: 0,
+        length: 3,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(widget.device.name),
+            bottom: TabBar(
+              tabs: [
+                Tab(
+                  icon: Icon(Icons.power),
+                ),
+                Tab(
+                  icon: Icon(Icons.power),
+                ),
+                Tab(
+                  icon: Icon(Icons.power),
+                )
+              ],
             ),
-            ListTileTheme(
-                tileColor: Colors.tealAccent,
-                child: ListTile(
-                  title:
-                      Text("Date : ${DateFormat('yyyy-MM-dd').format(date)}"),
-                  subtitle: Text("$date"),
-                  leading: Icon(Icons.date_range),
-                  onTap: () {
-                    showDatePicker(
-                            context: context,
-                            initialDate: date,
-                            firstDate: DateTime.parse("2010-01-01"),
-                            lastDate: DateTime.now())
-                        .then((dateSet) {
-                      if (dateSet != null)
-                        setState(() {
-                          date = dateSet ?? date;
-                        });
-                    });
-                  },
-                )),
-          ],
+          ),
+          body: TabBarView(
+            children: [
+              Column(
+                children: [
+                  FutureBuilder<List<Record>>(
+                    future: RecordAPI.getRecord(device.id, date),
+                    builder: (context, snapshot) {
+                      final deviceRecords = snapshot.data;
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return Center(child: CircularProgressIndicator());
+                        default:
+                          if (snapshot.hasError) {
+                            return Flexible(
+                              child: Stack(
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Center(
+                                          child:
+                                              Text('error ${snapshot.error}')),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            );
+                          } else {
+                            return buildPage(deviceRecords);
+                          }
+                      }
+                    },
+                  ),
+                  ListTileTheme(
+                      tileColor: Colors.tealAccent,
+                      child: ListTile(
+                        title: Text(
+                            "Date : ${DateFormat('yyyy-MM-dd').format(date)}"),
+                        subtitle: Text("$date"),
+                        leading: Icon(Icons.date_range),
+                        onTap: () {
+                          showDatePicker(
+                                  context: context,
+                                  initialDate: date,
+                                  firstDate: DateTime.parse("2010-01-01"),
+                                  lastDate: DateTime.now())
+                              .then((dateSet) {
+                            if (dateSet != null)
+                              setState(() {
+                                date = dateSet ?? date;
+                              });
+                          });
+                        },
+                      )),
+                ],
+              ),
+              Container(),
+              Container(),
+            ],
+          ),
         ),
       );
 
