@@ -121,7 +121,9 @@ class _DevicePageState extends State<DevicePage> {
                     kwh: value.kwh - difference[key - 1].kwh,
                     timestamp: value.timestamp))))
         .values //udah gitu dari map di ambil value nya aja -> berubah jadi iterable
-        .toList(); //iterable diubah ke list, iterable adalah sequence of data (sequence of data yang diakses oleh __next__()) , kyk linked list
+        .toList();
+    //iterable diubah ke list, iterable adalah sequence of data
+    //(sequence of data yang diakses oleh __next__()) , kyk linked list
 
     return Flexible(
         child: Stack(
@@ -161,8 +163,8 @@ class _DevicePageState extends State<DevicePage> {
       title: (mode == GraphModes.CUMULATIVE)
           ? ChartTitle(text: "Daily Usage Cumulative")
           : (mode == GraphModes.DIFFERENCE)
-              ? ChartTitle(text: "Daily Usage Difference")
-              : ChartTitle(text: "Daily Usage Delta"),
+              ? ChartTitle(text: "Daily Usage Growth per Hour")
+              : ChartTitle(text: "Daily Usage Delta per hour"),
       legend:
           Legend(isVisible: false, overflowMode: LegendItemOverflowMode.wrap),
       primaryXAxis: DateTimeAxis(

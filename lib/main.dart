@@ -117,9 +117,9 @@ class _MainPageState extends State<MainPage> {
         return DeviceListPage();
       case 1:
         return TabBarView(children: [
-          DevicesListCluster(category: 0),
-          DevicesListCluster(category: 1),
-          DevicesListCluster(category: 2),
+          DeviceCluster(category: 0),
+          DeviceCluster(category: 1),
+          DeviceCluster(category: 2),
           Container()
         ]);
       case 2:

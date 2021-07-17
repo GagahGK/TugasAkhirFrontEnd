@@ -6,17 +6,16 @@ import 'package:futurebuilder_example/model/devices.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class DevicesListCluster extends StatefulWidget {
-  const DevicesListCluster({Key key, @required this.category})
-      : super(key: key);
+class DeviceCluster extends StatefulWidget {
+  const DeviceCluster({Key key, @required this.category}) : super(key: key);
   final int category;
   @override
-  _DevicesListClusterState createState() => _DevicesListClusterState(category);
+  _DeviceClusterState createState() => _DeviceClusterState(category);
 }
 
-class _DevicesListClusterState extends State<DevicesListCluster> {
+class _DeviceClusterState extends State<DeviceCluster> {
   final int category;
-  _DevicesListClusterState(this.category);
+  _DeviceClusterState(this.category);
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -97,7 +96,7 @@ class _ClusterViewState extends State<ClusterView> {
               ))
             : FutureBuilder<List<Cluster>>(
                 future:
-                    ClusterAPI.getCluster(dateStart, dateEnd, category, select),
+                    ClusterAPI.getCluster(category, dateStart, dateEnd, select),
                 builder: (context, snapshot) {
                   final clusterDataDaily = snapshot.data;
                   switch (snapshot.connectionState) {

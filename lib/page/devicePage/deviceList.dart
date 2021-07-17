@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:futurebuilder_example/api/apiHelper.dart';
 import 'package:futurebuilder_example/model/devices.dart';
+import 'package:futurebuilder_example/model/cluster.dart';
 import 'package:futurebuilder_example/page/devicePage/devicePageGraph.dart';
 // import 'package:futurebuilder_example/page/deviceDetail.dart';
 
@@ -11,7 +12,6 @@ class DeviceListPage extends StatelessWidget {
           future: DeviceApi.getDevices(),
           builder: (context, snapshot) {
             final devices = snapshot.data;
-
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:
                 return Center(child: CircularProgressIndicator());
@@ -19,6 +19,9 @@ class DeviceListPage extends StatelessWidget {
                 if (snapshot.hasError) {
                   return Center(child: Text('error ${snapshot.error}'));
                 } else {
+                  // FutureBuilder<List<Cluster>>(
+                  //   future: ClusterAPI.getCluster(deviceId),
+                  // );
                   return buildDevicesList(devices);
                 }
             }
