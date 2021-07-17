@@ -75,7 +75,7 @@ class _DevicePageState extends State<DevicePage> {
                         .then((dateSet) {
                       if (dateSet != null)
                         setState(() {
-                          date = dateSet ?? date;
+                          date = dateSet;
                         });
                     });
                   },
@@ -164,7 +164,7 @@ class _DevicePageState extends State<DevicePage> {
           ? ChartTitle(text: "Daily Usage Cumulative")
           : (mode == GraphModes.DIFFERENCE)
               ? ChartTitle(text: "Daily Usage Growth per Hour")
-              : ChartTitle(text: "Daily Usage Delta per hour"),
+              : ChartTitle(text: "Daily Usage Delta with 1 hour Before"),
       legend:
           Legend(isVisible: false, overflowMode: LegendItemOverflowMode.wrap),
       primaryXAxis: DateTimeAxis(

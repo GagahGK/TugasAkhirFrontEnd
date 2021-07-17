@@ -8,8 +8,8 @@ import 'package:intl/intl.dart';
 
 class DeviceApi {
   static Future<List<Device>> getDevices() async {
-    SettingsPreferences sp = await SettingsPreferences.getSettings();
-    String uri = sp.uri ?? 'localhost';
+    SettingsPreferences? sp = await SettingsPreferences.getSettings();
+    String uri = sp?.uri ?? 'localhost';
     try {
       var response = await http.get(Uri.parse(uri + "/devices"));
       print(response.statusCode);
@@ -39,8 +39,8 @@ class DeviceApi {
   // To be replaced with getRecord() from RecordAPI class
   // =======================================================
   static Future<Device> getDeviceRecord(int deviceId) async {
-    SettingsPreferences sp = await SettingsPreferences.getSettings();
-    String uri = sp.uri ?? 'localhost';
+    SettingsPreferences? sp = await SettingsPreferences.getSettings();
+    String uri = sp?.uri ?? 'localhost';
     try {
       var response = await http.get(Uri.parse(uri + "/$deviceId" + "/records"));
       print(response.statusCode);
@@ -61,8 +61,8 @@ class DeviceApi {
 class RecordAPI {
   static Future<List<Record>> getRecord(
       int? deviceId, DateTime dateStart) async {
-    SettingsPreferences sp = await SettingsPreferences.getSettings();
-    String uri = sp.uri ?? 'http://localhost:8000';
+    SettingsPreferences? sp = await SettingsPreferences.getSettings();
+    String uri = sp?.uri ?? 'http://localhost:8000';
     DateTime dateStart00 = returnDate00(dateStart);
     DateTime dateEnd00 = dateStart00.add(Duration(days: 1));
     try {
@@ -108,8 +108,8 @@ class ClusterAPI {
   static Future<List<Cluster>> getCluster(
       int category, DateTime dateStart, DateTime dateEnd, int? deviceId) async {
     String responseAddress;
-    SettingsPreferences sp = await SettingsPreferences.getSettings();
-    String uri = sp.uri ?? 'http://localhost:8000';
+    SettingsPreferences? sp = await SettingsPreferences.getSettings();
+    String uri = sp?.uri ?? 'http://localhost:8000';
     // String categoryName = categoryList[category];
 
     final String payload = "/devices" +
@@ -140,15 +140,20 @@ class ClusterAPI {
   }
 
   static Future<List<Cluster>> getDevicesCluster(
-      {required DateTime dateStart, required DateTime dateEnd}) async {
-    String responseAddress;
-    SettingsPreferences sp = await SettingsPreferences.getSettings();
-    String uri = sp.uri ?? 'http://localhost:8000';
-
-    final String payload =
-        "/devices/cluster/${dateStart.toIso8601String()}/${dateEnd.toIso8601String()}";
-    responseAddress = uri + payload;
-    print(responseAddress);
+      {DateTime? dateStart, DateTime? dateEnd}) async {
+    SettingsPreferences? sp = await SettingsPreferences.getSettings();
+    String uri = sp?.uri ?? 'http://localhost:8000';
+    String responseAddress = uri;
+    if (dateStart == null || dateEnd == null) {
+      final String payload = "/devices/cluster/";
+      responseAddress = uri + payload;
+      print(responseAddress);
+    } else {
+      final String payload =
+          "/devices/cluster/${DateFormat("yyyy-MM-ddTHH:mm:ss").format(dateStart)}/${DateFormat("yyyy-MM-ddTHH:mm:ss").format(dateEnd)}";
+      responseAddress = uri + payload;
+      print(responseAddress);
+    }
     try {
       var response = await http.get(Uri.parse(responseAddress));
       print(response.statusCode);
@@ -167,21 +172,12 @@ class ClusterAPI {
     }
   }
 
-  // static Future<List<Cluster>> getDevicesClusterLatest() async {
-  //   String responseAddress;
-  //   SettingsPreferences sp = await SettingsPreferences.getSettings();
-  //   String uri = sp.uri ?? 'http://localhost:8000';
-
-  //   final String payload = "/devices/cluster/";
-  //   responseAddress = uri + payload;
-  // }
-
   // Gatau buat apa awoekawoek gajadi dipake
-  //todo getCluster
+  // todo getCluster
   static Future<List<Cluster>> getClusterDaily(
       int deviceId, DateTime dateStart, int categoryId) async {
-    SettingsPreferences sp = await SettingsPreferences.getSettings();
-    String uri = sp.uri ?? 'http://localhost:8000';
+    SettingsPreferences? sp = await SettingsPreferences.getSettings();
+    String uri = sp?.uri ?? 'http://localhost:8000';
     DateTime dateStart00 = returnDate00(dateStart);
     DateTime dateEnd00 = dateStart00.add(Duration(days: 7));
     final String category = "daily";
@@ -220,14 +216,4 @@ class ClusterAPI {
       return Future.error("Please Provide correct API URL");
     }
   }
-
-  // static Future<Cluster> getClusterDay(
-  //     DateTime day, int deviceId, int categoryId) async {
-  //   List<Cluster> clusterList =
-  //       await getClusterDaily(deviceId, day, categoryId);
-  //   day = returnDate00(day);
-  //   for (var i = 0; i < clusterList.length; i++) {
-  //     if (clusterList[i].timestamp == day) return clusterList[i];
-  //   }
-  // }
 }

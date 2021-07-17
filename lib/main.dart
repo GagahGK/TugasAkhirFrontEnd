@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 // import classes
 import 'package:futurebuilder_example/page/devicePage/deviceList.dart';
 import 'package:futurebuilder_example/page/cluster/deviceCluster.dart';
+import 'package:futurebuilder_example/page/cluster/devicesCluster.dart';
 import 'package:futurebuilder_example/page/settings_page.dart';
 
 Future main() async {
@@ -120,7 +121,7 @@ class _MainPageState extends State<MainPage> {
           DeviceCluster(category: 0),
           DeviceCluster(category: 1),
           DeviceCluster(category: 2),
-          Container()
+          DevicesCluster()
         ]);
       case 2:
         return SettingsPage();

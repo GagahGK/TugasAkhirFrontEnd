@@ -5,58 +5,17 @@ import 'package:futurebuilder_example/model/clusterCount.dart';
 import 'package:futurebuilder_example/model/devices.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:tuple/tuple.dart';
 
-class DeviceCluster extends StatefulWidget {
-  const DeviceCluster({Key? key, required this.category}) : super(key: key);
-  final int category;
-  @override
-  _DeviceClusterState createState() => _DeviceClusterState(category);
-}
-
-class _DeviceClusterState extends State<DeviceCluster> {
-  final int category;
-  _DeviceClusterState(this.category);
+class DevicesCluster extends StatefulWidget {
+  const DevicesCluster({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        body: FutureBuilder<List<Device>>(
-          future: DeviceApi.getDevices(),
-          builder: (context, snapshot) {
-            final devices = snapshot.data;
-
-            switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
-                return Center(child: CircularProgressIndicator());
-              default:
-                if (snapshot.hasError) {
-                  return Center(child: Text('error ${snapshot.error}'));
-                } else {
-                  return ClusterView(
-                    devices: devices,
-                    category: category,
-                  );
-                }
-            }
-          },
-        ),
-      );
+  _DevicesClusterState createState() => _DevicesClusterState();
 }
 
-class ClusterView extends StatefulWidget {
-  const ClusterView({Key? key, required this.devices, required this.category})
-      : super(key: key);
-  final List<Device>? devices;
-  final int category;
-
-  @override
-  _ClusterViewState createState() => _ClusterViewState(devices, category);
-}
-
-class _ClusterViewState extends State<ClusterView> {
-  final List<Device>? devices;
-  final int category;
-  _ClusterViewState(this.devices, this.category);
-  int? select = -1;
+class _DevicesClusterState extends State<DevicesCluster> {
+  _DevicesClusterState();
   DateTime dateStart = DateTime.now().subtract(Duration(hours: 1));
   DateTime dateEnd = DateTime.now();
 
@@ -64,67 +23,38 @@ class _ClusterViewState extends State<ClusterView> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        DropdownButton(
-          isExpanded: true,
-          value: select,
-          onChanged: (int? idSelect) {
-            setState(() {
-              select = idSelect;
-            });
-          },
-          items: devices!.map((Device value) {
-            return DropdownMenuItem<int>(
-              value: value.id,
-              child: Text(value.name!),
-            );
-          }).toList()
-            //.insert itu void biar bisa nge return ..insert
-            ..insert(0, new DropdownMenuItem(value: -1, child: Text("Select"))),
-        ),
-        (select == -1)
-            ? Flexible(
-                child: Stack(
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Select Date First"),
-                      Text("Then Select Device"),
-                    ],
-                  )
-                ],
-              ))
-            : FutureBuilder<List<Cluster>>(
-                future:
-                    ClusterAPI.getCluster(category, dateStart, dateEnd, select),
-                builder: (context, snapshot) {
-                  final clustersData = snapshot.data;
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.waiting:
-                      return Flexible(
-                          child: Center(child: CircularProgressIndicator()));
-                    default:
-                      if (snapshot.hasError) {
-                        print(snapshot.error);
-                        return Flexible(
-                          child: Center(
-                              child: Column(
-                            children: [
-                              Text('error ${snapshot.error}'),
-                              Text(
-                                  'Data not available, try to select earlier starting date and make sure to select device')
-                            ],
-                          )),
-                        );
-                      } else {
-                        return buildPage(clustersData!);
-                      }
+        FutureBuilder<Tuple2<List<Device>, List<Cluster>>>(
+            future: getDeviceWithCluster(dateStart, dateEnd),
+            builder: (context, snapshot) {
+              final clusterWithDevices = snapshot.data;
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting:
+                  return Flexible(
+                      child: Center(child: CircularProgressIndicator()));
+                default:
+                  if (snapshot.hasError) {
+                    print(snapshot.error);
+                    return Flexible(
+                      child: Center(
+                          child: Column(
+                        children: [
+                          Text('error ${snapshot.error}'),
+                          Text(
+                              'Data not available, try to select anoter starting date')
+                        ],
+                      )),
+                    );
+                  } else {
+                    return buildPage(clusterWithDevices?.item2 ?? [],
+                        clusterWithDevices?.item1 ?? []);
                   }
-                }),
+              }
+            }),
         ListTileTheme(
             tileColor: Colors.tealAccent,
             child: ListTile(
-              title: datePickerTitle(category, dateStart),
+              title: Text(
+                  "Start Date : ${DateFormat('yyyy-MM-d').format(dateStart)}"),
               // subtitle: Text("Start Date"),
               leading: Icon(Icons.date_range),
               onTap: () async {
@@ -174,7 +104,8 @@ class _ClusterViewState extends State<ClusterView> {
         ListTileTheme(
             tileColor: Colors.tealAccent,
             child: ListTile(
-              title: datePickerTitle(category, dateEnd),
+              title:
+                  Text("End Date : ${DateFormat('yyyy-MM-d').format(dateEnd)}"),
               // subtitle: Text("End Date"),
               leading: Icon(Icons.date_range),
               onTap: () async {
@@ -225,14 +156,16 @@ class _ClusterViewState extends State<ClusterView> {
     );
   }
 
-  Widget buildPage(List<Cluster> clusters) {
+  Widget buildPage(List<Cluster> clusters, List<Device> devices) {
     return Flexible(
       child: Stack(
         children: [
           Column(
             children: [
               Flexible(child: Stack(children: [buildClusterGraph(clusters)])),
-              Flexible(child: Stack(children: [buildClusterTable(clusters)]))
+              Flexible(
+                  child:
+                      Stack(children: [buildClusterTable(clusters, devices)]))
             ],
           )
         ],
@@ -241,16 +174,18 @@ class _ClusterViewState extends State<ClusterView> {
   }
 
   Widget buildClusterGraph(List<Cluster> clusters) {
-    var count = [0, 0, 0];
+    var count = [0, 0, 0, 0];
     clusters.forEach((element) {
-      count[element.cluster!]++;
+      count[element.cluster! + 1]++;
     });
     var clustersCount =
         List<ClusterCount>.from(count.asMap().entries.map((entry) {
-      int idx = entry.key;
+      int idx = entry.key - 1;
       int val = entry.value;
       return new ClusterCount(
-          value: val, clusterCategory: ClusterCount.clusterCategoryName[idx]);
+          value: val,
+          clusterCategory:
+              (idx < 0) ? "No Cluster" : ClusterCount.clusterCategoryName[idx]);
     }));
 
     return SfCircularChart(
@@ -266,34 +201,42 @@ class _ClusterViewState extends State<ClusterView> {
     );
   }
 
-  Widget buildClusterTable(List<Cluster> clusters) => SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: DataTable(
-          columns: <DataColumn>[
-            DataColumn(label: Text('Consumption')),
-            DataColumn(label: Expanded(child: Text('Cluster Type'))),
-            DataColumn(label: Text('Timestamp'))
-          ],
-          rows: clusters
-              .map((e) => DataRow(cells: <DataCell>[
-                    DataCell(Text("${e.powerConsumption}")),
-                    DataCell(Text(
-                        "${ClusterCount.clusterCategoryName[e.cluster!]}")),
-                    DataCell(Text(
-                        "${DateFormat('yyyy-MM-dd HH:mm').format(e.timestamp!)}")),
-                  ]))
-              .toList(),
+  Widget buildClusterTable(List<Cluster> clusters, List<Device> devices) =>
+      SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: DataTable(
+            columnSpacing: 10,
+            columns: <DataColumn>[
+              DataColumn(label: Text('Consumption')),
+              DataColumn(label: Expanded(child: Text('Cluster Type'))),
+              DataColumn(label: Text('Timestamp')),
+              DataColumn(label: Text('Building'))
+            ],
+            rows: clusters
+                .map((e) => DataRow(cells: <DataCell>[
+                      DataCell(Text(
+                          "${((e.powerConsumption ?? -1) < 0) ? "No Record" : e.powerConsumption}")),
+                      DataCell(Text(((e.cluster ?? -1) < 0)
+                          ? "Cluster NA"
+                          : "${ClusterCount.clusterCategoryName[e.cluster!]}")),
+                      DataCell(Text((e.timestamp!
+                              .isAfter(DateTime.fromMillisecondsSinceEpoch(1)))
+                          ? "${DateFormat('yyyy-MM-dd HH:mm').format(e.timestamp!)}"
+                          : "-")),
+                      DataCell(Text("${devices[e.deviceId! - 1].name}"))
+                    ]))
+                .toList(),
+          ),
         ),
       );
 
-  Widget datePickerTitle(int category, DateTime dateStart) {
-    switch (category) {
-      case 2:
-        return (Text(
-            "Start Date : ${DateFormat('yyyy-MM').format(dateStart)}"));
-      default:
-        return (Text(
-            "Start Date : ${DateFormat('yyyy-MM-dd').format(dateStart)}"));
-    }
+  static Future<Tuple2<List<Device>, List<Cluster>>> getDeviceWithCluster(
+      DateTime dateStart, DateTime dateEnd) async {
+    var devices = await DeviceApi.getDevices();
+    var cluster = await ClusterAPI.getDevicesCluster(
+        dateStart: dateStart, dateEnd: dateEnd);
+    return Tuple2(devices, cluster);
   }
 }

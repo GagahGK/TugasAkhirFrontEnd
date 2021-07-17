@@ -95,7 +95,7 @@ class _DevicePageState extends State<DevicePage> {
                               .then((dateSet) {
                             if (dateSet != null)
                               setState(() {
-                                date = dateSet ?? date;
+                                date = date;
                               });
                           });
                         },
