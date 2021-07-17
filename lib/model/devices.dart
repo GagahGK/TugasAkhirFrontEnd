@@ -24,11 +24,11 @@ class Device {
     this.records,
   });
 
-  int id;
-  String macAddress;
-  String name;
-  String power;
-  List<Record> records;
+  int? id;
+  String? macAddress;
+  String? name;
+  String? power;
+  List<Record>? records;
 
   factory Device.fromJson(Map<String, dynamic> json) => Device(
         id: json["id"],
@@ -45,7 +45,7 @@ class Device {
         "mac_address": macAddress,
         "name": name,
         "power": power,
-        "records": List<dynamic>.from(records.map((x) => x.toJson())),
+        "records": List<dynamic>.from(records!.map((x) => x.toJson())),
       };
 }
 
@@ -57,10 +57,10 @@ class Record {
     this.kwh,
   });
 
-  int id;
-  DateTime timestamp;
-  int deviceId;
-  double kwh;
+  int? id;
+  DateTime? timestamp;
+  int? deviceId;
+  double? kwh;
 
   void setKwh(double kwh) {
     this.kwh = kwh;
@@ -75,7 +75,7 @@ class Record {
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "timestamp": timestamp.toIso8601String(),
+        "timestamp": timestamp!.toIso8601String(),
         "device_id": deviceId,
         "kwh": kwh,
       };

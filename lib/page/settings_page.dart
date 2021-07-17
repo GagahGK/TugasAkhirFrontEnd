@@ -33,14 +33,14 @@ class SettingsPageState extends State<SettingsPage> {
               if (snapshot.hasError) {
                 return Center(child: Text('error ${snapshot.error}'));
               } else {
-                myController.text = settings.uri;
+                myController.text = settings!.uri!;
                 return buildForm(settings);
               }
           }
         },
       ));
 
-  Widget buildForm(SettingsPreferences settingsData) => Scaffold(
+  Widget buildForm(SettingsPreferences? settingsData) => Scaffold(
         body: Column(
           children: [
             Padding(

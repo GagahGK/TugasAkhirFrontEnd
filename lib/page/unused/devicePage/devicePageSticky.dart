@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 
 class DevicePage extends StatefulWidget {
   final Device device;
-  const DevicePage({Key key, @required this.device}) : super(key: key);
+  const DevicePage({Key? key, required this.device}) : super(key: key);
 
   @override
   _DevicePageState createState() => _DevicePageState(device);
@@ -19,7 +19,7 @@ class _DevicePageState extends State<DevicePage> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: Text(widget.device.name),
+          title: Text(widget.device.name!),
         ),
         body: Column(
           children: [
@@ -57,7 +57,7 @@ class _DevicePageState extends State<DevicePage> {
                             return Center(
                                 child: Text('error ${snapshot.error}'));
                           } else {
-                            return buildRecordList(deviceWithRecord);
+                            return buildRecordList(deviceWithRecord!);
                           }
                       }
                     },

@@ -6,7 +6,7 @@ import 'package:futurebuilder_example/page/unused/user_page.dart';
 class UserNetworkPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
-        body: FutureBuilder<List<User>>(
+        body: FutureBuilder<List<User>?>(
           future: UsersApi.getUsers(),
           builder: (context, snapshot) {
             final users = snapshot.data;
@@ -18,7 +18,7 @@ class UserNetworkPage extends StatelessWidget {
                 if (snapshot.hasError) {
                   return Center(child: Text('Some error occurred!'));
                 } else {
-                  return buildUsers(users);
+                  return buildUsers(users!);
                 }
             }
           },
@@ -36,10 +36,10 @@ class UserNetworkPage extends StatelessWidget {
               builder: (BuildContext context) => UserPage(user: user),
             )),
             leading: CircleAvatar(
-              backgroundImage: NetworkImage(user.urlAvatar),
+              backgroundImage: NetworkImage(user.urlAvatar!),
             ),
-            title: Text(user.username),
-            subtitle: Text(user.email),
+            title: Text(user.username!),
+            subtitle: Text(user.email!),
           );
         },
       );

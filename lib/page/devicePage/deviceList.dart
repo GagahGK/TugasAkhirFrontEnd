@@ -22,7 +22,7 @@ class DeviceListPage extends StatelessWidget {
                   // FutureBuilder<List<Cluster>>(
                   //   future: ClusterAPI.getCluster(deviceId),
                   // );
-                  return buildDevicesList(devices);
+                  return buildDevicesList(devices!);
                 }
             }
           },
@@ -39,15 +39,15 @@ class DeviceListPage extends StatelessWidget {
             onTap: () => Navigator.of(context).push(MaterialPageRoute(
               builder: (BuildContext context) => DevicePage(device: device),
             )),
-            title: Text(device.name),
+            title: Text(device.name!),
             leading: CircleAvatar(
               backgroundColor: Colors.purpleAccent.shade100,
-              child: Text(device.name[0] +
-                  (device.name.split(" ").length > 1
-                      ? device.name.split(" ").elementAt(1)[0]
+              child: Text(device.name![0] +
+                  (device.name!.split(" ").length > 1
+                      ? device.name!.split(" ").elementAt(1)[0]
                       : "")),
             ),
-            subtitle: Text(device.macAddress),
+            subtitle: Text(device.macAddress!),
           );
         },
       );

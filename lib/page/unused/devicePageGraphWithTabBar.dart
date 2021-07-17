@@ -14,7 +14,7 @@ class GraphModes {
 class DevicePage extends StatefulWidget {
   final Device device;
   // final List<DateTime> allowedDay;
-  const DevicePage({Key key, @required this.device}) : super(key: key);
+  const DevicePage({Key? key, required this.device}) : super(key: key);
 
   @override
   _DevicePageState createState() => _DevicePageState(device);
@@ -31,7 +31,7 @@ class _DevicePageState extends State<DevicePage> {
         length: 3,
         child: Scaffold(
           appBar: AppBar(
-            title: Text(widget.device.name),
+            title: Text(widget.device.name!),
             bottom: TabBar(
               tabs: [
                 Tab(
@@ -74,7 +74,7 @@ class _DevicePageState extends State<DevicePage> {
                               ),
                             );
                           } else {
-                            return buildPage(deviceRecords);
+                            return buildPage(deviceRecords!);
                           }
                       }
                     },
@@ -124,7 +124,7 @@ class _DevicePageState extends State<DevicePage> {
                 : (new Record(
                     deviceId: value.deviceId,
                     id: value.id,
-                    kwh: value.kwh - records[key - 1].kwh,
+                    kwh: value.kwh! - records[key - 1].kwh!,
                     timestamp: value.timestamp))))
         .values //udah gitu dari map di ambil value nya aja -> berubah jadi iterable
         .toList();
@@ -143,7 +143,7 @@ class _DevicePageState extends State<DevicePage> {
                 : (new Record(
                     deviceId: value.deviceId,
                     id: value.id,
-                    kwh: value.kwh - difference[key - 1].kwh,
+                    kwh: value.kwh! - difference[key - 1].kwh!,
                     timestamp: value.timestamp))))
         .values //udah gitu dari map di ambil value nya aja -> berubah jadi iterable
         .toList(); //iterable diubah ke list, iterable adalah sequence of data (sequence of data yang diakses oleh __next__()) , kyk linked list
@@ -195,17 +195,17 @@ class _DevicePageState extends State<DevicePage> {
           majorGridLines: const MajorGridLines(width: 0),
           intervalType: DateTimeIntervalType.hours,
           dateFormat: DateFormat.H(),
-          visibleMaximum: records[0].timestamp.add(Duration(hours: 5))),
+          visibleMaximum: records[0].timestamp!.add(Duration(hours: 5))),
       primaryYAxis: NumericAxis(
           title: AxisTitle(text: 'kWh'),
           visibleMinimum: records
               .reduce((value, element) => // ngeiterate list return satu element
-                  (value.kwh < element.kwh) ? value : element)
+                  (value.kwh! < element.kwh!) ? value : element)
               .kwh,
           autoScrollingDelta: 5,
           visibleMaximum: records
               .reduce((value, element) =>
-                  (value.kwh > element.kwh) ? value : element)
+                  (value.kwh! > element.kwh!) ? value : element)
               .kwh,
           axisLine: const AxisLine(width: 0),
           labelFormat: '{value}',

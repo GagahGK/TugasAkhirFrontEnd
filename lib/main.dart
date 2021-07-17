@@ -35,7 +35,7 @@ class MainPage extends StatefulWidget {
   final String title;
 
   const MainPage({
-    @required this.title,
+    required this.title,
   });
 
   @override
@@ -44,7 +44,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int bottomNavBarIndex = 2;
-  TabBar bottomBar;
+  TabBar? bottomBar;
   @override
   Widget build(BuildContext context) => DefaultTabController(
         initialIndex: 0,

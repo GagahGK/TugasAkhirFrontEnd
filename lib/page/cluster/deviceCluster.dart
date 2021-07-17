@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class DeviceCluster extends StatefulWidget {
-  const DeviceCluster({Key key, @required this.category}) : super(key: key);
+  const DeviceCluster({Key? key, required this.category}) : super(key: key);
   final int category;
   @override
   _DeviceClusterState createState() => _DeviceClusterState(category);
@@ -43,9 +43,9 @@ class _DeviceClusterState extends State<DeviceCluster> {
 }
 
 class ClusterView extends StatefulWidget {
-  const ClusterView({Key key, @required this.devices, @required this.category})
+  const ClusterView({Key? key, required this.devices, required this.category})
       : super(key: key);
-  final List<Device> devices;
+  final List<Device>? devices;
   final int category;
 
   @override
@@ -53,10 +53,10 @@ class ClusterView extends StatefulWidget {
 }
 
 class _ClusterViewState extends State<ClusterView> {
-  final List<Device> devices;
+  final List<Device>? devices;
   final int category;
   _ClusterViewState(this.devices, this.category);
-  int select = -1;
+  int? select = -1;
   DateTime dateStart = DateTime.now().subtract(Duration(hours: 1));
   DateTime dateEnd = DateTime.now();
 
@@ -67,15 +67,15 @@ class _ClusterViewState extends State<ClusterView> {
         DropdownButton(
           isExpanded: true,
           value: select,
-          onChanged: (int idSelect) {
+          onChanged: (int? idSelect) {
             setState(() {
               select = idSelect;
             });
           },
-          items: devices.map((Device value) {
+          items: devices!.map((Device value) {
             return DropdownMenuItem<int>(
               value: value.id,
-              child: Text(value.name),
+              child: Text(value.name!),
             );
           }).toList()
             //.insert itu void biar bisa nge return ..insert
@@ -117,7 +117,7 @@ class _ClusterViewState extends State<ClusterView> {
                           )),
                         );
                       } else {
-                        return buildPage(clusterDataDaily);
+                        return buildPage(clusterDataDaily!);
                       }
                   }
                 }),
@@ -243,7 +243,7 @@ class _ClusterViewState extends State<ClusterView> {
   Widget buildClusterGraph(List<Cluster> clusters) {
     var count = [0, 0, 0];
     clusters.forEach((element) {
-      count[element.cluster]++;
+      count[element.cluster!]++;
     });
     var clustersCount =
         List<ClusterCount>.from(count.asMap().entries.map((entry) {
@@ -278,9 +278,9 @@ class _ClusterViewState extends State<ClusterView> {
               .map((e) => DataRow(cells: <DataCell>[
                     DataCell(Text("${e.powerConsumption}")),
                     DataCell(
-                        Text("${ClusterCount.clusterCategoryName[e.cluster]}")),
+                        Text("${ClusterCount.clusterCategoryName[e.cluster!]}")),
                     DataCell(Text(
-                        "${DateFormat('yyyy-MM-dd HH:mm').format(e.timestamp)}")),
+                        "${DateFormat('yyyy-MM-dd HH:mm').format(e.timestamp!)}")),
                   ]))
               .toList(),
         ),

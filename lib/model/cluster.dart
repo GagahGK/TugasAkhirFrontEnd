@@ -20,12 +20,12 @@ class Cluster {
     this.cluster,
   });
 
-  int id;
-  DateTime timestamp;
-  int deviceId;
-  double kwh;
-  double powerConsumption;
-  int cluster;
+  int? id;
+  DateTime? timestamp;
+  int? deviceId;
+  double? kwh;
+  double? powerConsumption;
+  int? cluster;
 
   factory Cluster.fromJson(Map<String, dynamic> json) => Cluster(
         id: json["id"],
@@ -38,7 +38,7 @@ class Cluster {
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "timestamp": timestamp.toIso8601String(),
+        "timestamp": timestamp!.toIso8601String(),
         "device_id": deviceId,
         "kwh": kwh,
         "power_consumption": powerConsumption,
