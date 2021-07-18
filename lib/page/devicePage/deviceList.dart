@@ -38,7 +38,7 @@ class DeviceListPage extends StatelessWidget {
         itemCount: devices.length,
         itemBuilder: (context, index) {
           final device = devices[index];
-          final cluster = clusters[index];
+          final cluster = (clusters.length > index) ? clusters[index] : null;
           device?.name ??= "NULL";
           return ListTile(
             onTap: () => Navigator.of(context).push(MaterialPageRoute(
@@ -65,8 +65,14 @@ class DeviceListPage extends StatelessWidget {
 
   static Future<Tuple2<List<Device>, List<Cluster>>>
       getDeviceWithCluster() async {
-    var devices = await DeviceApi.getDevices();
-    var cluster = await ClusterAPI.getDevicesCluster();
-    return Tuple2(devices, cluster);
+    List<Cluster> cluster = [];
+    var devices = DeviceApi.getDevices();
+    try {
+      cluster = await ClusterAPI.getDevicesCluster();
+    } catch (e) {
+      print(e);
+    }
+
+    return Tuple2(await devices, cluster);
   }
 }

@@ -31,7 +31,7 @@ class Cluster {
         id: json["id"],
         timestamp: DateTime.parse(json["timestamp"]),
         deviceId: json["device_id"].toInt(),
-        kwh: json["kwh"].toDouble(),
+        kwh: json["kwh"]?.toDouble(),
         powerConsumption: json["power_consumption"].toDouble(),
         cluster: json["cluster"],
       );

@@ -187,12 +187,18 @@ class _DevicesClusterState extends State<DevicesCluster> {
           clusterCategory:
               (idx < 0) ? "No Cluster" : ClusterCount.clusterCategoryName[idx]);
     }));
+    List<ClusterCount> countClusterExistent = [];
+    clustersCount.forEach((value) {
+      if (value.value! > 0) {
+        countClusterExistent.add(value);
+      }
+    });
 
     return SfCircularChart(
       legend: Legend(isVisible: true),
       series: <CircularSeries>[
         PieSeries<ClusterCount, String>(
-            dataSource: clustersCount,
+            dataSource: countClusterExistent,
             xValueMapper: (ClusterCount clusterCount, _) =>
                 clusterCount.clusterCategory,
             yValueMapper: (ClusterCount clusterCount, _) => clusterCount.value,
@@ -223,7 +229,7 @@ class _DevicesClusterState extends State<DevicesCluster> {
                           : "${ClusterCount.clusterCategoryName[e.cluster!]}")),
                       DataCell(Text((e.timestamp!
                               .isAfter(DateTime.fromMillisecondsSinceEpoch(1)))
-                          ? "${DateFormat('yyyy-MM-dd HH:mm').format(e.timestamp!)}"
+                          ? "${DateFormat('yyyy-MM-dd').format(e.timestamp!)}"
                           : "-")),
                       DataCell(Text("${devices[e.deviceId! - 1].name}"))
                     ]))
