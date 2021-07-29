@@ -26,8 +26,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: title,
         theme: ThemeData(
-          primarySwatch: Colors.teal,
-        ),
+            primarySwatch: Colors.teal, scaffoldBackgroundColor: Colors.white),
         home: MainPage(title: title),
       );
 }
@@ -44,7 +43,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int bottomNavBarIndex = 2;
+  int bottomNavBarIndex = 0;
   TabBar? bottomBar;
   @override
   Widget build(BuildContext context) => DefaultTabController(

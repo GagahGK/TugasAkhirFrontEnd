@@ -45,12 +45,7 @@ class DeviceListPage extends StatelessWidget {
               builder: (BuildContext context) => DevicePage(device: device!),
             )),
             title: Text(device?.name ?? "Building name not assigned"),
-            trailing: Text(((cluster?.cluster ?? -1) < 0)
-                ? "Cluster NA"
-                : ClusterCount.clusterCategoryName[cluster!.cluster!] +
-                    " : " +
-                    cluster.powerConsumption.toString() +
-                    " Kwh"),
+            trailing: clusterName(cluster),
             leading: CircleAvatar(
               backgroundColor: Colors.purpleAccent.shade100,
               child: Text((device?.name?[0] ?? "") +
@@ -74,5 +69,24 @@ class DeviceListPage extends StatelessWidget {
     }
 
     return Tuple2(await devices, cluster);
+  }
+
+  Widget clusterName(Cluster? clusterData) {
+    if (clusterData?.cluster == 2) {
+      return Text(
+          ((clusterData?.cluster ?? -1) < 0)
+              ? "Cluster NA"
+              : ClusterCount.clusterCategoryName[clusterData!.cluster!] +
+                  " : " +
+                  clusterData.powerConsumption.toString() +
+                  " Kwh",
+          style: TextStyle(color: Colors.red));
+    } else
+      return Text(((clusterData?.cluster ?? -1) < 0)
+          ? "Cluster NA"
+          : ClusterCount.clusterCategoryName[clusterData!.cluster!] +
+              " : " +
+              clusterData.powerConsumption.toString() +
+              " Kwh");
   }
 }

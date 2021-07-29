@@ -124,7 +124,7 @@ class _ClusterViewState extends State<ClusterView> {
         ListTileTheme(
             tileColor: Colors.tealAccent,
             child: ListTile(
-              title: datePickerTitle(category, dateStart),
+              title: datePickerTitle(category, dateStart, 'Start'),
               // subtitle: Text("Start Date"),
               leading: Icon(Icons.date_range),
               onTap: () async {
@@ -174,7 +174,7 @@ class _ClusterViewState extends State<ClusterView> {
         ListTileTheme(
             tileColor: Colors.tealAccent,
             child: ListTile(
-              title: datePickerTitle(category, dateEnd),
+              title: datePickerTitle(category, dateEnd, 'End'),
               // subtitle: Text("End Date"),
               leading: Icon(Icons.date_range),
               onTap: () async {
@@ -258,6 +258,8 @@ class _ClusterViewState extends State<ClusterView> {
       series: <CircularSeries>[
         PieSeries<ClusterCount, String>(
             dataSource: clustersCount,
+            pointColorMapper: (ClusterCount data, _) =>
+                (ClusterCount.color[data.clusterCategory]),
             xValueMapper: (ClusterCount clusterCount, _) =>
                 clusterCount.clusterCategory,
             yValueMapper: (ClusterCount clusterCount, _) => clusterCount.value,
@@ -275,25 +277,28 @@ class _ClusterViewState extends State<ClusterView> {
             DataColumn(label: Text('Timestamp'))
           ],
           rows: clusters
-              .map((e) => DataRow(cells: <DataCell>[
-                    DataCell(Text("${e.powerConsumption}")),
-                    DataCell(Text(
-                        "${ClusterCount.clusterCategoryName[e.cluster!]}")),
-                    DataCell(Text(
-                        "${DateFormat('yyyy-MM-dd HH:mm').format(e.timestamp!)}")),
-                  ]))
+              .map((e) => DataRow(
+                      color: MaterialStateProperty.all(
+                          (e.cluster! == 2) ? Colors.red.shade200 : null),
+                      cells: <DataCell>[
+                        DataCell(Text("${e.powerConsumption}")),
+                        DataCell(Text(
+                            "${ClusterCount.clusterCategoryName[e.cluster!]}")),
+                        DataCell(Text(
+                            "${DateFormat('yyyy-MM-dd HH:mm').format(e.timestamp!)}")),
+                      ]))
               .toList(),
         ),
       );
 
-  Widget datePickerTitle(int category, DateTime dateStart) {
+  Widget datePickerTitle(int category, DateTime dateStart, String select) {
     switch (category) {
       case 2:
         return (Text(
-            "Start Date : ${DateFormat('yyyy-MM').format(dateStart)}"));
+            "$select Date : ${DateFormat('yyyy-MM').format(dateStart)}"));
       default:
         return (Text(
-            "Start Date : ${DateFormat('yyyy-MM-dd').format(dateStart)}"));
+            "$select Date : ${DateFormat('yyyy-MM-dd').format(dateStart)}"));
     }
   }
 }

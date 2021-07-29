@@ -9,7 +9,7 @@ class SettingsPreferences {
 
   static Future<SettingsPreferences>? getSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String uri = (prefs.getString('uri')) ?? "http://localhost:8000";
+    String uri = (prefs.getString('uri')) ?? "https://api.dickys.tech";
     SettingsPreferences response = SettingsPreferences(uri);
     return response;
   }

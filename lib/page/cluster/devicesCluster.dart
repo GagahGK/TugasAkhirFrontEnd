@@ -189,7 +189,8 @@ class _DevicesClusterState extends State<DevicesCluster> {
     }));
     List<ClusterCount> countClusterExistent = [];
     clustersCount.forEach((value) {
-      if (value.value! > 0) {
+      print(value.value);
+      if (value.value! > 0 /*&& value.clusterCategory != "No Cluster"*/) {
         countClusterExistent.add(value);
       }
     });
@@ -199,10 +200,12 @@ class _DevicesClusterState extends State<DevicesCluster> {
       series: <CircularSeries>[
         PieSeries<ClusterCount, String>(
             dataSource: countClusterExistent,
+            pointColorMapper: (ClusterCount data, _) =>
+                (ClusterCount.color[data.clusterCategory]),
             xValueMapper: (ClusterCount clusterCount, _) =>
                 clusterCount.clusterCategory,
             yValueMapper: (ClusterCount clusterCount, _) => clusterCount.value,
-            dataLabelSettings: DataLabelSettings(isVisible: true))
+            dataLabelSettings: DataLabelSettings(isVisible: true)),
       ],
     );
   }
@@ -221,18 +224,21 @@ class _DevicesClusterState extends State<DevicesCluster> {
               DataColumn(label: Text('Building'))
             ],
             rows: clusters
-                .map((e) => DataRow(cells: <DataCell>[
-                      DataCell(Text(
-                          "${((e.powerConsumption ?? -1) < 0) ? "No Record" : e.powerConsumption}")),
-                      DataCell(Text(((e.cluster ?? -1) < 0)
-                          ? "Cluster NA"
-                          : "${ClusterCount.clusterCategoryName[e.cluster!]}")),
-                      DataCell(Text((e.timestamp!
-                              .isAfter(DateTime.fromMillisecondsSinceEpoch(1)))
-                          ? "${DateFormat('yyyy-MM-dd').format(e.timestamp!)}"
-                          : "-")),
-                      DataCell(Text("${devices[e.deviceId! - 1].name}"))
-                    ]))
+                .map((e) => DataRow(
+                        color: MaterialStateProperty.all(
+                            (e.cluster! == 2) ? Colors.red.shade200 : null),
+                        cells: <DataCell>[
+                          DataCell(Text(
+                              "${((e.powerConsumption ?? -1) < 0) ? "No Record" : e.powerConsumption}")),
+                          DataCell(Text(((e.cluster ?? -1) < 0)
+                              ? "Cluster NA"
+                              : "${ClusterCount.clusterCategoryName[e.cluster!]}")),
+                          DataCell(Text((e.timestamp!.isAfter(
+                                  DateTime.fromMillisecondsSinceEpoch(1)))
+                              ? "${DateFormat('yyyy-MM-dd').format(e.timestamp!)}"
+                              : "-")),
+                          DataCell(Text("${devices[e.deviceId! - 1].name}"))
+                        ]))
                 .toList(),
           ),
         ),
